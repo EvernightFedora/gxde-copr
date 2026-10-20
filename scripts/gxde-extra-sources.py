@@ -185,6 +185,23 @@ def prepare_one(name, lock):
     (output / 'SPECS' / f'{name}.spec').write_text(spec)
 
 
+def prepare_meta():
+    """Build a source tree for the installation-only aggregate package."""
+    output = ROOT / 'build/gxde-extra-rpmbuild'
+    for directory in ('SOURCES', 'SPECS', 'BUILD', 'BUILDROOT', 'RPMS', 'SRPMS'):
+        (output / directory).mkdir(parents=True, exist_ok=True)
+    applications = sorted(name for name, item in MANIFEST.items() if item['aur'])
+    if len(applications) != 25:
+        raise ValueError(f'Expected 25 optional AUR applications, found {len(applications)}')
+    readme = ('This package installs every GXDE optional application in the\n'
+              'charofstring/gxde-extra COPR project:\n\n' +
+              '\n'.join(applications) + '\n')
+    (output / 'SOURCES/README.meta').write_text(readme)
+    spec = (PACKAGE / 'meta.spec.in').read_text().replace(
+        '@REQUIRES@', '\n'.join(f'Requires:       {name}' for name in applications))
+    (output / 'SPECS/gxde-extra.spec').write_text(spec)
+
+
 def build_requires(name, meta):
     if meta['build'] == 'copy':
         return 'BuildRequires:  python3'
@@ -269,8 +286,14 @@ def provides(name, meta):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('command', choices=('update', 'prepare'))
-    parser.add_argument('--package', choices=tuple(MANIFEST) + ('all',), default='all')
+    parser.add_argument('--package', choices=tuple(MANIFEST) + ('all', 'gxde-extra'), default='all')
     args = parser.parse_args()
+    if args.package == 'gxde-extra':
+        if args.command != 'prepare':
+            parser.error('gxde-extra is a metapackage and has no upstream tag to update')
+        prepare_meta()
+        print('prepared gxde-extra', flush=True)
+        return
     selected = list(MANIFEST) if args.package == 'all' else [args.package]
     if args.command == 'update':
         update(selected)

@@ -42,6 +42,8 @@ jobs:
           old_path = Path('/tmp/gxde-extra-old-lock.json')
           old = json.loads(old_path.read_text()) if old_path.exists() else {}
           changed = sorted(n for n in manifest if sys.argv[1] != 'schedule' or old.get(n) != new.get(n))
+          if sys.argv[1] != 'schedule':
+              changed.append('gxde-extra')
           print('packages=' + json.dumps(changed, separators=(',', ':')))
           print('build=' + str(bool(changed)).lower())
           PY
@@ -52,7 +54,10 @@ jobs:
           new = json.loads(Path('packages/gxde-extra/upstream-lock.json').read_text())
           old_path = Path('/tmp/gxde-extra-old-lock.json')
           old = json.loads(old_path.read_text()) if old_path.exists() else {}
-          print('\n'.join(sorted(n for n in manifest if sys.argv[1] != 'schedule' or old.get(n) != new.get(n))))
+          changed = sorted(n for n in manifest if sys.argv[1] != 'schedule' or old.get(n) != new.get(n))
+          if sys.argv[1] != 'schedule':
+              changed.append('gxde-extra')
+          print('\n'.join(changed))
           PY
           )
           for name in "${changed[@]}"; do
@@ -141,7 +146,7 @@ jobs:
           done
           for name in "${names[@]}"; do
             if [[ $name == gio-qt6 || $name == libimagevisualresult6 ]]; then continue; fi
-            if [[ $name == gxde-downloader-neo ]]; then
+            if [[ $name == gxde-downloader-neo || $name == gxde-extra ]]; then
               deferred+=("$name")
               continue
             fi
@@ -157,12 +162,14 @@ jobs:
           done
           failed=0
           for id in "${ids[@]}"; do $copr watch-build "$id" || failed=1; done
+          if (( failed )); then exit 1; fi
           for name in "${deferred[@]}"; do
             mapfile -t srpms < <(find result -name "$name-*.src.rpm")
             test "${#srpms[@]}" -eq 1
             $copr build --chroot fedora-44-x86_64 --chroot fedora-44-aarch64 \
                 --chroot fedora-45-x86_64 --chroot fedora-45-aarch64 \
                 "$COPR_GXDE_EXTRA_PROJECT" "${srpms[0]}" || failed=1
+            if (( failed )); then exit 1; fi
           done
           exit "$failed"
 

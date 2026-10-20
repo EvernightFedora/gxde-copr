@@ -11,7 +11,7 @@ cd /work
 python3 - "$name" <<'PY'
 import json, sys
 manifest = json.load(open('packages/gxde-extra/manifest.json'))
-assert sys.argv[1] in manifest, f'Unknown gxde-extra package: {sys.argv[1]}'
+assert sys.argv[1] == 'gxde-extra' or sys.argv[1] in manifest, f'Unknown gxde-extra package: {sys.argv[1]}'
 PY
 dnf -y install rpm-build redhat-rpm-config dnf5-plugins python3 shadow-utils
 for project in gxde-dtk5 gxde-dtk2 gxde-dtk6 gxde-dtk2-qt6 gxde-infra gxde-core gxde-extra; do

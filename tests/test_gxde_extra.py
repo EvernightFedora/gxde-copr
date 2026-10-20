@@ -21,6 +21,16 @@ class ExtraSourceTests(unittest.TestCase):
         self.assertEqual('copy', manifest['gxde-downloader-neo']['build'])
         self.assertEqual('qmake6', manifest['gxde-voice-recorder']['build'])
 
+    def test_metapackage_requires_each_aur_application_only(self):
+        extra.prepare_meta()
+        spec = (ROOT / 'build/gxde-extra-rpmbuild/SPECS/gxde-extra.spec').read_text()
+        requires = {line.split(':', 1)[1].strip() for line in spec.splitlines()
+                    if line.startswith('Requires:')}
+        expected = {name for name, item in extra.MANIFEST.items() if item['aur']}
+        self.assertEqual(expected, requires)
+        self.assertNotIn('gio-qt6', requires)
+        self.assertNotIn('libimagevisualresult6', requires)
+
     def test_released_tag_move_is_rejected(self):
         previous = {'tag': '1.2.3', 'commit': 'a' * 40, 'version': '1.2.3',
                     'release': 1, 'sha256': 'b' * 64}
