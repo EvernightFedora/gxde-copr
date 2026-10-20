@@ -1,0 +1,23 @@
+# GXDE infra 源码补丁登记
+
+当前新增源码补丁：**1 项**。
+
+## 0001-network-utils-lrelease-path.patch
+
+- 组件/tag：`gxde-network-utils-qt6 6.0.1-arch1`，提交 `2d3ecd17b03e`。
+- 原因：上游 `translate_generation.sh` 将 Qt6 `lrelease` 固定为 `/usr/lib/qt6/bin/lrelease`；Fedora 44/45 的 `qt6-linguist` 提供 `/usr/bin/lrelease-qt6`，导致 COPR 11170578 的翻译生成失败。
+- 修改：优先通过 `PATH` 查找 `lrelease-qt6`，其次查找 `lrelease`，缺失时明确报错。保留翻译生成，不触及 C++ 源码。
+- 移除条件：GXDE 正式标签的脚本不再使用固定路径，且在 Fedora 44/45 完成构建验证。
+
+已在此轮对用户报告。
+
+- `xdg-desktop-portal-gxde` 的 `patch_dmabuf_header.py` 是上游 tag 自带的生成代码修正，未由 RPM 添加或修改。
+- 上游仓库内已有的 `.pc`/`arch` 补丁或构建规则均保留在对应的锁定 commit 中，RPM 不额外应用。
+- Fedora 缺少 `deepin-policy-ts-convert`；构建时直接调用 `deepin-gettext-tools` 正式标签所带脚本，保留 policy 翻译，无需修改 `gxde-api` 源码。
+- Fedora 的 ALSA 头文件位于 `/usr/include/alsa/asoundlib.h`，而 GXDE Go 绑定使用 `<asoundlib.h>`；仅给 CGo 传入 `-I/usr/include/alsa`，不修改头文件或绑定源码。
+- Qt6 网络库的 qmake 项目默认把库装在 `/usr/lib`，RPM 构建参数将其目标目录设为 Fedora 的 `%{_libdir}`，并让链接器搜索暂存的该目录；不修改项目文件。
+- `gxde-movie-reborn` 自带测试可执行文件在 Fedora 默认 PIE 链接下需要位置无关对象；通过 CMake 的 `CMAKE_POSITION_INDEPENDENT_CODE=ON` 编译，不修改测试或播放器源码。
+- RPM 安装阶段只筛选 Fedora 不适用的 Debian 配置路径与重复 schema，不修改编译源码。
+- `gxde-api` 的 `.pkla` 文件仍被打包；其 `/var/lib/polkit-1` 父目录由 Fedora `polkit-pkla-compat` 提供并保持 `root:polkitd 0750`，RPM 不重复占有这些目录，同时依赖该兼容包解析规则。无需修改 `gxde-api` 源码。
+
+若未来必须回补源码修复，先列出组件/tag、补丁内容、原因和移除条件，并向用户报告。

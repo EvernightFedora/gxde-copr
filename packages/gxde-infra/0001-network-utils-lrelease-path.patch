@@ -1,0 +1,15 @@
+diff --git a/gxde-network-utils-qt6/translate_generation.sh b/gxde-network-utils-qt6/translate_generation.sh
+--- a/gxde-network-utils-qt6/translate_generation.sh
++++ b/gxde-network-utils-qt6/translate_generation.sh
+@@ -2,7 +2,11 @@
+ # this file is used to auto-generate .qm file from .ts file.
+ # author: shibowen at linuxdeepin.com
+ 
+-LRELEASE=/usr/lib/qt6/bin/lrelease
++LRELEASE=${LRELEASE:-$(command -v lrelease-qt6 || command -v lrelease)}
++if [ -z "$LRELEASE" ]; then
++    echo 'Qt6 lrelease not found' >&2
++    exit 1
++fi
+ 
+ ts_list=(`ls translations/*.ts`)

@@ -1,0 +1,145 @@
+# Generated from upstream-lock.json; see PATCHES.md for source patch history.
+@COMMITS@
+Name:           gxde-infra
+Version:        @VERSION@
+Release:        @RELEASE@%{?dist}
+Summary:        GXDE desktop infrastructure, media libraries and portal
+License:        GPL-3.0-or-later AND LGPL-3.0-or-later AND LGPL-2.0-or-later AND MIT
+URL:            https://github.com/GXDE-OS
+@SOURCES@
+Source20:       build.sh
+Source21:       split-files.py
+Source22:       sources.sha256
+Source23:       upstream-lock.json
+Source24:       gxde-k9.tmpfiles.conf
+Patch0:         0001-network-utils-lrelease-path.patch
+ExclusiveArch:  x86_64 aarch64
+BuildRequires:  gcc gcc-c++ make cmake ninja-build python3 golang
+BuildRequires:  pkgconf-pkg-config gettext intltool vala gobject-introspection-devel
+BuildRequires:  libgcrypt-devel libgpg-error-devel
+BuildRequires:  gxde-dtk5-devel gxde-dtk2-devel gxde-dtk2-widget-devel
+BuildRequires:  gxde-dtk6-devel gxde-dtk2-qt6-devel
+BuildRequires:  qt5-qtbase-devel qt5-qttools-devel qt5-linguist qt5-qtx11extras-devel
+BuildRequires:  qt5-qtsvg-devel qt5-qtmultimedia-devel
+BuildRequires:  qt6-qtbase-devel qt6-qtbase-private-devel qt6-qttools-devel qt6-linguist
+BuildRequires:  qt6-qtdeclarative-devel qt6-qtwayland-devel
+BuildRequires:  qt6-qtmultimedia-devel
+BuildRequires:  pkgconfig(glib-2.0) pkgconfig(gio-2.0) pkgconfig(gtk+-3.0)
+BuildRequires:  pkgconfig(gdk-pixbuf-2.0) pkgconfig(gdk-pixbuf-xlib-2.0)
+BuildRequires:  pkgconfig(cairo) pkgconfig(librsvg-2.0)
+BuildRequires:  pkgconfig(alsa) pkgconfig(gudev-1.0) pkgconfig(libcanberra)
+BuildRequires:  pkgconfig(poppler-glib) pkgconfig(freetype2) pkgconfig(libisoburn-1)
+BuildRequires:  pkgconfig(mpv) pkgconfig(libavformat) pkgconfig(libavcodec)
+BuildRequires:  pkgconfig(libavutil) pkgconfig(libffmpegthumbnailer)
+BuildRequires:  pkgconfig(libpulse) pkgconfig(libpulse-simple) pkgconfig(dvdnav)
+BuildRequires:  pkgconfig(openssl) pkgconfig(xcb) pkgconfig(xcb-aux)
+BuildRequires:  pkgconfig(xcb-ewmh) pkgconfig(xcb-shape) pkgconfig(xcb-proto)
+BuildRequires:  pkgconfig(x11) pkgconfig(xext) pkgconfig(xtst)
+BuildRequires:  pkgconfig(xcursor) pkgconfig(xfixes) pkgconfig(xi)
+BuildRequires:  pkgconfig(wayland-client) pkgconfig(gbm) pkgconfig(libdrm)
+BuildRequires:  pkgconfig(libpipewire-0.3) wlr-protocols-devel wayland-protocols-devel
+BuildRequires:  dbus-devel systemd-rpm-macros
+Requires:       gxde-dtk5 gxde-dtk2 gxde-dtk6 gxde-dtk2-qt6
+Requires:       udisks2 xdg-desktop-portal polkit-pkla-compat
+Provides:       deepin-desktop-base = %{version}-%{release}
+Provides:       deepin-desktop-schemas = %{version}-%{release}
+Provides:       deepin-api = %{version}-%{release}
+Provides:       udisks2-qt6 = %{version}-%{release}
+Provides:       xdg-desktop-portal-impl
+Conflicts:      deepin-desktop-base < %{version}
+Conflicts:      deepin-desktop-schemas < %{version}
+Conflicts:      deepin-api < %{version}
+Conflicts:      udisks2-qt6 < %{version}
+Conflicts:      xdg-desktop-portal-dde deepin-daemon
+
+%description
+GXDE infrastructure components grouped like the Arch gxde-infra-git package:
+desktop defaults, API tools, Qt6 support libraries, movie player and portal.
+
+%package devel
+Summary:        GXDE infrastructure development files and Treeland protocols
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+Conflicts:      treeland-protocols-devel
+
+# gxmr (Qt5) links a DTK widget library, but gxde-dtk5-widget-devel and
+# gxde-dtk2-widget-devel both own dtkwidget.pc and /usr/include/dtk5/DWidget
+# and cannot coexist. Do not force either flavor through infra-devel;
+# consumers install the widget devel matching their build (gxde-core uses
+# DTK2 widget headers, matching the AUR gxde-dtk2widget-dev-git makedepend).
+%global __requires_exclude ^pkgconfig\\(dtkwidget\\)$
+
+%description devel
+Headers, linker names, CMake and pkg-config files, Go sources and protocol XML.
+
+%prep
+(cd %{_sourcedir} && sha256sum -c %{SOURCE22})
+%setup -q -c -T -a 0 -a 1 -a 2 -a 3 -a 4 -a 5 -a 6 -a 7 -a 8 -a 9 -a 10 -a 11 -a 12 -a 13 -a 14 -a 15
+mv golang-gxde-dev-%{commit0} golang-gxde-dev
+mv gxde-k9-%{commit1} gxde-k9
+mv disomaster-qt6-%{commit2} disomaster-qt6
+mv gxde-api-%{commit3} gxde-api
+mv deepin-keyring-%{commit4} deepin-keyring
+mv libgnome-keyring-%{commit5} libgnome-keyring
+mv gxde-desktop-base-%{commit6} gxde-desktop-base
+mv gxde-desktop-schemas-%{commit7} gxde-desktop-schemas
+mv dframework-dbus-qt6-%{commit8} dframework-dbus-qt6
+mv gxde-network-utils-qt6-%{commit9} gxde-network-utils-qt6
+mv udisks2-qt6-%{commit10} udisks2-qt6
+mv gxde-movie-reborn-%{commit11} gxde-movie-reborn
+mv libdbusmenu-qt6-%{commit12} libdbusmenu-qt6
+mv treeland-protocols-%{commit13} treeland-protocols
+mv xdg-desktop-portal-gxde-%{commit14} xdg-desktop-portal-gxde
+mv deepin-gettext-tools-%{commit15} deepin-gettext-tools
+%patch -P 0 -p1
+cp %{SOURCE23} upstream-lock.json
+mkdir licenses
+cp gxde-desktop-base/LICENSE licenses/gxde-desktop-base.LICENSE
+cp gxde-api/LICENSE licenses/gxde-api.LICENSE
+cp xdg-desktop-portal-gxde/LICENSE licenses/xdg-desktop-portal-gxde.LICENSE
+
+%build
+%set_build_flags
+export PATH=%{_qt5_bindir}:%{_qt6_bindir}:$PATH
+bash %{SOURCE20} "%{_libdir}" "%{_smp_build_ncpus}"
+
+%install
+cp -a stage/. %{buildroot}/
+cp -a gxde-k9/src/. %{buildroot}/
+install -Dm644 %{SOURCE24} %{buildroot}%{_tmpfilesdir}/gxde-k9.conf
+make -C gxde-api install DESTDIR=%{buildroot} SYSTEMD_LIB_DIR=/usr/lib
+rm -rf %{buildroot}/boot
+install -Dm644 deepin-keyring/keyrings/*.gpg -t %{buildroot}%{_datadir}/keyrings/
+make -C libgnome-keyring install DESTDIR=%{buildroot}
+make -C gxde-desktop-base install DESTDIR=%{buildroot} GXDE_CODENAME=zhuangzhuang
+rm -rf %{buildroot}/etc/apt %{buildroot}/etc/default/grub.d \
+       %{buildroot}/etc/sudoers.d %{buildroot}/etc/systemd \
+       %{buildroot}/usr/share/python-apt %{buildroot}/usr/share/distro-info \
+       %{buildroot}/tmp
+ln -s ../usr/lib/deepin/desktop-version %{buildroot}/etc/deepin-version
+ln -s ../usr/lib/deepin/os-version %{buildroot}/etc/os-version
+%ifarch aarch64
+make -C gxde-desktop-schemas install DESTDIR=%{buildroot} DISTRO=arm
+%else
+make -C gxde-desktop-schemas install DESTDIR=%{buildroot} DISTRO=x86
+%endif
+rm -f %{buildroot}%{_datadir}/glib-2.0/schemas/com.deepin.dde.dock.module.gschema.xml
+# Fedora's RPM post-processing drops libtool archives. Remove them before
+# generating file manifests so the manifests match the final buildroot.
+find %{buildroot} -type f -name '*.la' -delete
+python3 %{SOURCE21} %{buildroot} %{_libdir}
+
+%check
+if grep -R -l -F "$PWD/stage" %{buildroot}%{_libdir}/pkgconfig %{buildroot}%{_libdir}/cmake; then
+    echo 'Staging path leaked into installed development metadata' >&2
+    exit 1
+fi
+
+%files -f runtime.files
+%license licenses/
+%doc upstream-lock.json
+
+%files devel -f devel.files
+
+%changelog
+* Mon Oct 19 2026 CharOfString <root@charofstring.cc> - @VERSION@-@RELEASE@
+- Package GXDE infrastructure from pinned upstream releases for Fedora 44 and 45

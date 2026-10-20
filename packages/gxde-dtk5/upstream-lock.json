@@ -1,0 +1,48 @@
+{
+  "version": "6.7.43",
+  "release": 3,
+  "components": {
+    "dtk5common": {
+      "tag": "6.7.43",
+      "commit": "a19bd13d3c31d005ee51fd581048f108c959c1ed",
+      "url": "https://codeload.github.com/GXDE-OS/dtk5common/tar.gz/a19bd13d3c31d005ee51fd581048f108c959c1ed",
+      "sha256": "69755c4d9a4a5d90c6ace962dc896d0534062a1397de1c9370743d7bcbc42010"
+    },
+    "dtklog": {
+      "tag": "6.7.43-gxde2",
+      "commit": "11e0704360ddc3a4d9e6afe190ed7ade98ef0273",
+      "url": "https://codeload.github.com/GXDE-OS/dtklog/tar.gz/11e0704360ddc3a4d9e6afe190ed7ade98ef0273",
+      "sha256": "0681176661915d58d85f1b21742a1969a705fb6043ea57c731a300c4acac4d84"
+    },
+    "dtk5core": {
+      "tag": "6.7.43",
+      "commit": "16597fcd9c4afd2c26e4fe4d7a7f2edcb8a8b285",
+      "url": "https://codeload.github.com/GXDE-OS/dtk5core/tar.gz/16597fcd9c4afd2c26e4fe4d7a7f2edcb8a8b285",
+      "sha256": "5a0a45eb3700466691540860585982c0db6167b22eb15e1cf30932e1f5aefecf"
+    },
+    "dtk5gui": {
+      "tag": "6.7.43",
+      "commit": "2bd868437055c3f2487f8e5497eef0ae9ec834ac",
+      "url": "https://codeload.github.com/GXDE-OS/dtk5gui/tar.gz/2bd868437055c3f2487f8e5497eef0ae9ec834ac",
+      "sha256": "b34808a7ba9b92bce388e86247838bf6ad83e2117e779bf8ef38b79bb76fe277"
+    },
+    "dtk5widget": {
+      "tag": "6.7.43",
+      "commit": "38e828598ec6a53eb0f4070b7f7eca26c4bd06bc",
+      "url": "https://codeload.github.com/GXDE-OS/dtk5widget/tar.gz/38e828598ec6a53eb0f4070b7f7eca26c4bd06bc",
+      "sha256": "83c8fd96cec552776e0568a876e25b0cea6865e8d5a17d83224d98e606191794"
+    },
+    "dde-qt5platform-plugins": {
+      "tag": "5.6.34",
+      "commit": "17b722a11881e42ae9241674949c6509cd123b85",
+      "url": "https://codeload.github.com/GXDE-OS/dde-qt5platform-plugins/tar.gz/17b722a11881e42ae9241674949c6509cd123b85",
+      "sha256": "3f3399b6269b24aee33375a785d2dd590281308a170d860a68b656dda6bc214a"
+    },
+    "dde-qt5integration": {
+      "tag": "6.7.44-gxde1",
+      "commit": "bd7fe0a7fe7d27feb240d711dfafa97f3eb40c4c",
+      "url": "https://codeload.github.com/GXDE-OS/dde-qt5integration/tar.gz/bd7fe0a7fe7d27feb240d711dfafa97f3eb40c4c",
+      "sha256": "c08b5099429b709ad87ad74a2fe453cc8f20ca8fc95eb720bb673aaad9b1b829"
+    }
+  }
+}

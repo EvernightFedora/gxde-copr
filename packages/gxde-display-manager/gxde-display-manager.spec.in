@@ -1,0 +1,123 @@
+# Generated from upstream-lock.json; see PATCHES.md for source patch history.
+@COMMITS@
+Name:           gxde-display-manager
+Version:        @VERSION@
+Release:        @RELEASE@%{?dist}
+Summary:        GXDE Display Manager, a fork of SDDM maintained by GXDE OS
+License:        GPL-3.0-or-later AND MIT AND OFL-1.1
+URL:            https://github.com/GXDE-OS/gxde-display-manager
+@SOURCES@
+Source100:      build.sh
+Source101:      split-files.py
+Source102:      sources.sha256
+Source103:      upstream-lock.json
+# Fedora-specific PAM files (upstream uses Arch's system-login; Fedora uses
+# password-auth/postlogin/pam_selinux).
+Source10:       gxdm.pam
+Source11:       gxdm-autologin.pam
+Source12:       gxdm-greeter.pam
+Source13:       gxdm-rescue.pam
+ExclusiveArch:  x86_64 aarch64
+
+BuildRequires:  gcc gcc-c++ cmake ninja-build
+BuildRequires:  rust cargo clang-devel
+BuildRequires:  python3-docutils
+BuildRequires:  pam-devel
+BuildRequires:  qt6-qtbase-devel qt6-qtbase-private-devel qt6-qttools-devel
+BuildRequires:  qt6-qtdeclarative-devel qt6-qtsvg-devel qt6-qtwayland-devel
+BuildRequires:  wayland-protocols-devel
+BuildRequires:  pkgconfig(x11) pkgconfig(xau) pkgconfig(xcb)
+BuildRequires:  xcb-util-wm-devel xcb-util-image-devel
+BuildRequires:  pkgconfig(xcursor) pkgconfig(xfixes) pkgconfig(xi)
+BuildRequires:  pkgconfig(xrandr) pkgconfig(xscrnsaver) pkgconfig(xtst)
+BuildRequires:  pkgconfig(xkbcommon)
+BuildRequires:  wayland-devel
+BuildRequires:  systemd-devel
+BuildRequires:  dbus-devel
+BuildRequires:  gxde-dtk6-devel gxde-dtk2-qt6-devel
+BuildRequires:  gsettings-qt6-devel
+BuildRequires:  layer-shell-qt-devel
+
+Requires:       gxde-dtk6 gxde-dtk2-qt6 gsettings-qt6
+Requires:       pam systemd-libs dbus kbd
+Requires:       xauth bash
+Recommends:     selinux-policy-targeted
+
+Recommends:     flakewm
+Recommends:     accountsservice
+
+Provides:       gxdm
+Conflicts:      gxdm
+# gxdm and sddm install to different paths (/usr/bin/gxdm vs /usr/bin/sddm,
+# /usr/lib/gxdm vs /usr/lib/sddm) and can coexist on Fedora. The user picks
+# which one to enable via systemctl. Do NOT conflict with sddm — Plasma needs it.
+Provides:       service(graphical-login)
+
+%description
+GXDE Display Manager is a fork of SDDM maintained by GXDE OS contributors.
+It provides a Wayland-native greeter using DTK6 and an emergency-mode
+terminal rescue tool. X11 is no longer provided.
+
+%prep
+(cd %{_sourcedir} && sha256sum -c %{SOURCE102})
+%setup -q -c -T -a 0 -a 1
+mv gxde-display-manager-%{commit0} gxde-display-manager
+mv gxdm-emergency-mode-%{commit1} gxdm-emergency-mode
+# Extract vendored Rust crates into the emergency-mode tree.
+tar xf %{SOURCE2} -C gxdm-emergency-mode
+cp %{SOURCE3} MavenPro-OFL.txt
+cp %{SOURCE103} upstream-lock.json
+mkdir licenses
+cp gxde-display-manager/debian/copyright licenses/gxde-display-manager.copyright 2>/dev/null || :
+cp gxdm-emergency-mode/LICENSE licenses/gxdm-emergency-mode.LICENSE 2>/dev/null || :
+
+%build
+%set_build_flags
+bash %{SOURCE100} "%{_libdir}" "%{_smp_build_ncpus}"
+
+%install
+cp -a stage/. %{buildroot}/
+
+# Fedora PAM files replace upstream's Arch-style configs.
+install -Dpm 644 %{SOURCE10} %{buildroot}%{_sysconfdir}/pam.d/gxdm
+install -Dpm 644 %{SOURCE11} %{buildroot}%{_sysconfdir}/pam.d/gxdm-autologin
+install -Dpm 644 %{SOURCE12} %{buildroot}%{_sysconfdir}/pam.d/gxdm-greeter
+install -Dpm 644 %{SOURCE13} %{buildroot}%{_sysconfdir}/pam.d/gxdm-rescue
+
+# Remove upstream PAM files installed by cmake FIRST, then install
+# Fedora-specific ones (upstream uses Arch's system-login; Fedora uses
+# password-auth/postlogin/pam_selinux).
+rm -f %{buildroot}%{_sysconfdir}/pam.d/gxdm
+rm -f %{buildroot}%{_sysconfdir}/pam.d/gxdm-autologin
+rm -f %{buildroot}%{_sysconfdir}/pam.d/gxdm-greeter
+
+install -Dpm 644 %{SOURCE10} %{buildroot}%{_sysconfdir}/pam.d/gxdm
+install -Dpm 644 %{SOURCE11} %{buildroot}%{_sysconfdir}/pam.d/gxdm-autologin
+install -Dpm 644 %{SOURCE12} %{buildroot}%{_sysconfdir}/pam.d/gxdm-greeter
+install -Dpm 644 %{SOURCE13} %{buildroot}%{_sysconfdir}/pam.d/gxdm-rescue
+
+# MavenPro OFL license (font license reference, not packaged font data).
+install -Dm 644 MavenPro-OFL.txt \
+    %{buildroot}%{_defaultlicensedir}/gxde-display-manager/OFL-MavenPro.txt
+
+find %{buildroot} -type f -name '*.la' -delete
+
+%check
+python3 %{SOURCE101} %{buildroot} %{_libdir}
+if grep -R -l -F "$PWD/stage" %{buildroot}%{_libdir}/pkgconfig %{buildroot}%{_libdir}/cmake 2>/dev/null; then
+    echo 'Staging path leaked into installed development metadata' >&2
+    exit 1
+fi
+
+%files -f runtime.files
+%license licenses/
+%doc upstream-lock.json
+%config(noreplace) %{_sysconfdir}/pam.d/gxdm
+%config(noreplace) %{_sysconfdir}/pam.d/gxdm-autologin
+%config(noreplace) %{_sysconfdir}/pam.d/gxdm-greeter
+%config(noreplace) %{_sysconfdir}/pam.d/gxdm-rescue
+%config(noreplace) %{_sysconfdir}/gxdm/OMG.conf
+
+%changelog
+* Mon Oct 19 2026 CharOfString <root@charofstring.cc> - @VERSION@-@RELEASE@
+- Package GXDE Display Manager from pinned upstream releases for Fedora 44 and 45

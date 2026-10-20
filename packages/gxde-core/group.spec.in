@@ -1,0 +1,64 @@
+# Generated from packages/gxde-core/upstream-lock.json (group: @GROUP@);
+# source patches and build adaptations are listed in packages/gxde-core/PATCHES.md.
+@DEBUG_PACKAGE@
+# split-files.py generates the %files manifests during %install, before
+# brp-compress would rename man pages to .gz — disable compression so the
+# manifests stay in sync with the buildroot.
+%global __brp_compress %{nil}
+@COMMITS@
+Name:           @NAME@
+Version:        @VERSION@
+Release:        @RELEASE@%{?dist}
+Summary:        @SUMMARY@
+License:        GPL-3.0-or-later AND LGPL-3.0-or-later
+URL:            https://github.com/GXDE-OS
+@SOURCES@
+Source100:      build.sh
+Source101:      common.sh
+Source102:      split-files.py
+Source103:      sources.sha256
+Source104:      upstream-lock.json
+@TOOL_SOURCES@
+ExclusiveArch:  x86_64 aarch64
+@BUILDREQS@
+@REQUIRES@
+@PROVIDES@
+@CONFLICTS@
+
+%description
+@DESCRIPTION@
+@DEVEL_PACKAGE@
+
+%prep
+(cd %{_sourcedir} && sha256sum -c %{SOURCE103})
+%setup -q -c -T @SETUP@
+@RENAME@
+mkdir licenses
+@LICENSES@
+cp %{SOURCE104} upstream-lock.json
+@TOOL_PREP@
+
+%build
+%set_build_flags
+bash %{SOURCE100} "%{_libdir}" "%{_smp_build_ncpus}" "%{SOURCE101}"
+
+%install
+cp -a stage/. %{buildroot}/
+find %{buildroot} -type f -name '*.la' -delete
+python3 %{SOURCE102} %{buildroot} %{_libdir}
+
+%check
+if grep -R -l -F "$PWD/stage" %{buildroot}%{_libdir}/pkgconfig %{buildroot}%{_libdir}/cmake 2>/dev/null; then
+    echo 'Staging path leaked into installed development metadata' >&2
+    exit 1
+fi
+@SCRIPTLETS@
+
+%files -f runtime.files
+%license licenses/
+%doc upstream-lock.json
+@DEVEL_FILES@
+
+%changelog
+* Tue Oct 20 2026 CharOfString <root@charofstring.cc> - @VERSION@-@RELEASE@
+- Split the gxde-core bundle into purpose-based packages for Fedora 44 and 45

@@ -1,0 +1,92 @@
+# Generated from upstream-lock.json; see PATCHES.md for source changes.
+@COMMITS@
+Name:           gxde-dtk6
+Version:        @VERSION@
+Release:        @RELEASE@%{?dist}
+Summary:        GXDE Qt 6 toolkit and desktop integration
+License:        LGPL-3.0-or-later AND LGPL-2.1-or-later
+URL:            https://github.com/GXDE-OS
+@SOURCES@
+Source10:       build.sh
+Source11:       split-files.py
+Source12:       sources.sha256
+Source13:       upstream-lock.json
+ExclusiveArch:  x86_64 aarch64
+BuildRequires:  gcc-c++ cmake ninja-build make python3
+BuildRequires:  gxde-dtk5-devel >= 6.7.43
+BuildRequires:  qt6-rpm-macros qt6-qtbase-devel qt6-qtbase-private-devel
+BuildRequires:  qt6-qtdeclarative-devel qt6-qtdeclarative-private-devel
+BuildRequires:  qt6-qttools-devel qt6-qtshadertools-devel qt6-qt5compat-devel
+BuildRequires:  qt6-qtsvg-devel cmake(Qt6WaylandClient) cmake(Qt6WaylandClientPrivate)
+BuildRequires:  spdlog-devel fmt-devel libicu-devel vulkan-headers libqtxdg-devel
+BuildRequires:  pkgconfig(uchardet) pkgconfig(libsystemd) pkgconfig(gio-2.0) pkgconfig(gl)
+BuildRequires:  pkgconfig(librsvg-2.0) pkgconfig(dbus-1)
+BuildRequires:  pkgconfig(x11) pkgconfig(x11-xcb) pkgconfig(xext) pkgconfig(xi)
+BuildRequires:  pkgconfig(xcb-util) pkgconfig(libstartup-notification-1.0)
+BuildRequires:  pkgconfig(xcb-renderutil) pkgconfig(sm) pkgconfig(ice)
+BuildRequires:  pkgconfig(xcb-render) pkgconfig(xcb) pkgconfig(xcb-cursor) pkgconfig(xcb-image)
+BuildRequires:  pkgconfig(xcb-icccm) pkgconfig(xcb-sync) pkgconfig(xcb-xfixes)
+BuildRequires:  pkgconfig(xcb-shm) pkgconfig(xcb-randr) pkgconfig(xcb-shape)
+BuildRequires:  pkgconfig(xcb-keysyms) pkgconfig(xcb-xkb) pkgconfig(xcb-composite)
+BuildRequires:  pkgconfig(xcb-damage) pkgconfig(xcb-xinerama) pkgconfig(xkbcommon-x11)
+BuildRequires:  pkgconfig(mtdev) pkgconfig(egl) pkgconfig(cairo)
+BuildRequires:  pkgconfig(wayland-client) pkgconfig(wayland-cursor) pkgconfig(xkbcommon)
+Requires:       gxde-dtk5 >= 6.7.43
+Requires:       qt6-filesystem
+Recommends:     lshw
+Conflicts:      dtk6log dtk6core dtk6gui dtk6widget dtk6declarative
+Conflicts:      deepin-qt6platform-plugins deepin-qt6integration qt6integration
+
+%description
+GXDE DTK6 logging, core, GUI, widgets, QML modules and Qt6 integration.
+Shared DTK configuration is supplied by gxde-dtk5.
+
+%package devel
+Summary:        Development files for GXDE DTK6
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       gxde-dtk5-devel >= 6.7.43
+Requires:       qt6-qtbase-devel%{?_isa} qt6-qtdeclarative-devel%{?_isa}
+Conflicts:      dtk6log-devel dtk6core-devel dtk6gui-devel dtk6widget-devel dtk6declarative-devel
+
+%description devel
+Headers, linker symlinks and CMake, qmake and pkg-config metadata for DTK6.
+
+%prep
+(cd %{_sourcedir} && sha256sum -c %{SOURCE12})
+%setup -q -c -T -a 0 -a 1 -a 2 -a 3 -a 4 -a 5 -a 6
+mv dtk6log-%{commit0} dtk6log
+mv dtk6core-%{commit1} dtk6core
+mv dtk6gui-%{commit2} dtk6gui
+mv dtk6widget-%{commit3} dtk6widget
+mv dtk6declarative-%{commit4} dtk6declarative
+mv dde-qt6platform-plugins-%{commit5} dde-qt6platform-plugins
+mv qt6integration-%{commit6} qt6integration
+cp %{SOURCE13} upstream-lock.json
+mkdir licenses
+for module in dtk6core dtk6gui dtk6widget dtk6declarative dde-qt6platform-plugins qt6integration; do
+    cp "$module/LICENSE" "licenses/$module.LICENSE"
+done
+cp dtk6log/LICENSE.LGPL licenses/dtk6log.LICENSE.LGPL
+
+%build
+%set_build_flags
+export PATH=%{_qt6_bindir}:$PATH
+bash %{SOURCE10} "%{_libdir}" "%{_libexecdir}" "%{_qt6_archdatadir}" "%{_qt6_headerdir}" "%{_smp_build_ncpus}"
+
+%install
+for module in dtk6log dtk6core dtk6gui dtk6widget dtk6declarative dde-qt6platform-plugins qt6integration; do
+    DESTDIR=%{buildroot} cmake --install "build-$module"
+done
+python3 %{SOURCE11} %{buildroot} %{_libdir} %{_qt6_archdatadir}
+
+%check
+if grep -R -l -F "$PWD/stage" %{buildroot}%{_libdir}/cmake %{buildroot}%{_libdir}/pkgconfig; then
+    echo 'Staging path leaked into installed metadata' >&2
+    exit 1
+fi
+
+%files -f runtime.files
+%license licenses/
+%doc upstream-lock.json
+
+%files devel -f devel.files

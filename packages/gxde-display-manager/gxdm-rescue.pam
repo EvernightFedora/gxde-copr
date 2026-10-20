@@ -1,0 +1,11 @@
+#%PAM-1.0
+# Fedora PAM for gxdm-emergency-mode (rescue). Install as /etc/pam.d/gxdm-rescue.
+# Fail closed if logind integration is unavailable.
+auth        include     system-auth
+account     include     system-auth
+password    include     system-auth
+session     required    pam_loginuid.so
+session     optional    pam_keyinit.so      force revoke
+session     include     system-auth
+session     required    pam_env.so
+session     required    pam_systemd.so

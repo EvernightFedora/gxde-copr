@@ -1,0 +1,22 @@
+--- a/dde-qt-dbus-factory/libdframeworkdbus/generate_code.py
++++ b/dde-qt-dbus-factory/libdframeworkdbus/generate_code.py
+@@ -38,7 +38,7 @@
+     if not os.path.exists(generated_dir):
+         os.mkdir(generated_dir)
+     else:
+-        for file in glob.glob1(generated_dir, "*"):
++        for file in glob.glob("*", root_dir=generated_dir):
+             os.remove(os.path.join(generated_dir, file))
+ 
+     # generate generated.pri
+@@ -51,8 +51,8 @@
+ 
+         print("generating the pri file...")
+         pwdfy = lambda x: "$$PWD/%s" % x
+-        sources = list(map(pwdfy, sorted(glob.glob1(generated_dir, "*.cpp"))))
+-        headers = list(map(pwdfy, sorted(glob.glob1(generated_dir, "*.h"))))
++        sources = list(map(pwdfy, sorted(glob.glob("*.cpp", root_dir=generated_dir))))
++        headers = list(map(pwdfy, sorted(glob.glob("*.h", root_dir=generated_dir))))
+         pri.write("HEADERS += %s\n" % " ".join(headers))
+         pri.write("SOURCES += %s" % " ".join(sources))
+         print("done.")

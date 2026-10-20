@@ -1,0 +1,85 @@
+# Generated from upstream-lock.json; source patches, if any, are listed in PATCHES.md.
+# Fedora's brp-ldconfig removes links whose targets live in another RPM.
+# Run ldconfig before adding the AUR-compatible Core SONAME link instead.
+%undefine __brp_ldconfig
+@COMMITS@
+Name:           gxde-dtk2
+Version:        @VERSION@
+Release:        @RELEASE@%{?dist}
+Summary:        GXDE legacy DTK2 widgets and Qt5 integration
+License:        LGPL-3.0-or-later AND GPL-3.0-or-later
+URL:            https://github.com/GXDE-OS
+@SOURCES@
+Source10:       build.sh
+Source11:       split-files.py
+Source12:       sources.sha256
+Source13:       upstream-lock.json
+Patch0:         0001-factory-python-glob.patch
+ExclusiveArch:  x86_64 aarch64
+BuildRequires:  gcc-c++ make python3
+BuildRequires:  gxde-dtk5-devel >= 6.7.43
+BuildRequires:  qt5-rpm-macros qt5-qtbase-devel qt5-qtbase-private-devel
+BuildRequires:  qt5-qttools-devel qt5-linguist qt5-qtsvg-devel qt5-qtx11extras-devel
+BuildRequires:  qt5-qtmultimedia-devel
+BuildRequires:  pkgconfig(gsettings-qt) pkgconfig(librsvg-2.0) pkgconfig(cairo)
+BuildRequires:  pkgconfig(dbus-1) pkgconfig(x11) pkgconfig(xext) pkgconfig(xi)
+BuildRequires:  pkgconfig(xcb) pkgconfig(xcb-util) pkgconfig(libstartup-notification-1.0)
+BuildRequires:  pkgconfig(wayland-client)
+Requires:       gxde-dtk5 >= 6.7.43
+Requires:       qt5-filesystem
+Conflicts:      deepin-qt-dbus-factory
+
+%description
+Legacy GXDE DTK2 widgets, DBus factory and Qt5 style integration.
+
+%package devel
+Summary:        Development files for GXDE DTK2 DBus factory
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       gxde-dtk5-devel >= 6.7.43
+
+%description devel
+DBus factory headers and build metadata.
+
+%package widget-devel
+Summary:        Development files for GXDE DTK2 Widget
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       gxde-dtk5-devel >= 6.7.43
+Conflicts:      gxde-dtk5-widget-devel
+Conflicts:      dtkwidget-devel
+
+%description widget-devel
+Legacy DTK2 Widget headers and build metadata. This alternative conflicts
+with DTK5 Widget development files.
+
+%prep
+(cd %{_sourcedir} && sha256sum -c %{SOURCE12})
+%setup -q -c -T -a 0 -a 1 -a 2
+mv gxde-qt-dbus-factory-%{commit0} dde-qt-dbus-factory
+mv dtk2widget-%{commit1} dtk2widget
+mv gxde-qt5integration-%{commit2} gxde-qt5integration
+%patch -P 0 -p1
+cp %{SOURCE13} upstream-lock.json
+mkdir licenses
+for module in dde-qt-dbus-factory dtk2widget gxde-qt5integration; do
+    cp "$module/LICENSE" "licenses/$module.LICENSE"
+done
+
+%build
+%set_build_flags
+bash %{SOURCE10} "%{_libdir}" "%{_qt5_archdatadir}" "%{version}" "%{_smp_build_ncpus}"
+
+%install
+for module in dde-qt-dbus-factory dtk2widget gxde-qt5integration; do
+    make -C "build-$module" INSTALL_ROOT=%{buildroot} install
+ done
+/sbin/ldconfig -N -r %{buildroot}
+ln -s libdtkcore.so.5 %{buildroot}%{_libdir}/libdtkcore.so.2
+python3 %{SOURCE11} %{buildroot} %{_libdir} %{_qt5_archdatadir}
+
+%files -f runtime.files
+%license licenses/
+%doc upstream-lock.json
+
+%files devel -f devel.files
+
+%files widget-devel -f widget-devel.files

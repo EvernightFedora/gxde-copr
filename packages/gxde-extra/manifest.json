@@ -1,0 +1,202 @@
+{
+  "dde-clipboard": {
+    "repo": "GXDE-OS/dde-clipboard",
+    "upstream": "dde-clipboard",
+    "aur": "dde-clipboard-git",
+    "summary": "dde-clipboard",
+    "build": "cmake",
+    "license": "GPL-3.0-or-later AND CC-BY-4.0 AND CC0-1.0"
+  },
+  "gxde-boot-maker": {
+    "repo": "GXDE-OS/gxde-boot-maker",
+    "upstream": "gxde-boot-maker",
+    "aur": "gxde-boot-maker-git",
+    "summary": "gxde-boot-maker",
+    "build": "qmake6",
+    "license": "GPL-3.0-or-later"
+  },
+  "gxde-calculator": {
+    "repo": "GXDE-OS/deepin-calculator",
+    "upstream": "deepin-calculator",
+    "aur": "gxde-calculator-git",
+    "summary": "GXDE fork of old DTK5 calculator",
+    "build": "cmake",
+    "license": "GPL-3.0-or-later AND GPL-2.0-or-later AND LGPL-3.0-or-later AND CC-BY-4.0 AND CC0-1.0"
+  },
+  "gxde-calendar": {
+    "repo": "GXDE-OS/gxde-calendar",
+    "upstream": "gxde-calendar",
+    "aur": "gxde-calendar-git",
+    "summary": "gxde-calendar",
+    "build": "cmake",
+    "license": "GPL-3.0-or-later"
+  },
+  "gxde-camera": {
+    "repo": "GXDE-OS/deepin-camera",
+    "upstream": "deepin-camera",
+    "aur": "gxde-camera-git",
+    "summary": "gxde-camera",
+    "build": "cmake",
+    "license": "GPL-3.0-or-later AND BSD-3-Clause AND CC-BY-4.0 AND CC0-1.0"
+  },
+  "gxde-clone": {
+    "repo": "GXDE-OS/deepin-clone",
+    "upstream": "deepin-clone",
+    "aur": "gxde-clone-git",
+    "summary": "gxde-clone",
+    "build": "cmake",
+    "license": "GPL-3.0-or-later"
+  },
+  "gxde-dict": {
+    "repo": "GXDE-OS/gxde-dict",
+    "upstream": "gxde-dict",
+    "aur": "gxde-dict-git",
+    "summary": "gxde-dict",
+    "build": "cmake",
+    "license": "GPL-3.0-or-later"
+  },
+  "gxde-dlna-caster": {
+    "repo": "GXDE-OS/gxde-dlna-caster",
+    "upstream": "gxde-dlna-caster",
+    "aur": "gxde-dlna-caster-git",
+    "summary": "gxde-dlna-caster",
+    "build": "cmake",
+    "license": "GPL-3.0-or-later"
+  },
+  "gxde-downloader-neo": {
+    "repo": "GXDE-OS/gxde-downloader-neo",
+    "upstream": "gxde-downloader-neo",
+    "aur": "gxde-downloader-neo-git",
+    "summary": "Download manager for GXDE based on AriaNG and aria2",
+    "build": "copy",
+    "license": "GPL-3.0-or-later"
+  },
+  "gxde-editor": {
+    "repo": "GXDE-OS/gxde-editor",
+    "upstream": "gxde-editor",
+    "aur": "gxde-editor-git",
+    "summary": "gxde-editor",
+    "build": "cmake",
+    "license": "GPL-3.0-or-later"
+  },
+  "gxde-filetransfer": {
+    "repo": "GXDE-OS/gxde-filetransfer",
+    "upstream": "gxde-filetransfer",
+    "aur": "gxde-filetransfer-git",
+    "summary": "GXDE file transfer client",
+    "build": "qmake6",
+    "license": "GPL-3.0-or-later"
+  },
+  "gxde-font-manager": {
+    "repo": "GXDE-OS/gxde-font-manager",
+    "upstream": "gxde-font-manager",
+    "aur": "gxde-font-manager-git",
+    "summary": "gxde-font-manager",
+    "build": "cmake",
+    "license": "GPL-3.0-or-later"
+  },
+  "gxde-hardware-viewer": {
+    "repo": "GXDE-OS/gxde-hardware-viewer",
+    "upstream": "gxde-hardware-viewer",
+    "aur": "gxde-hardware-viewer-git",
+    "summary": "gxde-hardware-viewer",
+    "build": "make",
+    "license": "GPL-3.0-or-later"
+  },
+  "gxde-image-viewer": {
+    "repo": "GXDE-OS/gxde-image-viewer",
+    "upstream": "gxde-image-viewer",
+    "aur": "gxde-image-viewer-git",
+    "summary": "Image viewer for GXDE",
+    "build": "qmake6",
+    "license": "GPL-3.0-or-later"
+  },
+  "gxde-log-viewer": {
+    "repo": "GXDE-OS/deepin-log-viewer",
+    "upstream": "deepin-log-viewer",
+    "aur": "gxde-log-viewer-git",
+    "summary": "A system log viewer forked from deepin-log-viewer with GXDE adaption",
+    "build": "cmake",
+    "license": "GPL-3.0-or-later"
+  },
+  "gxde-music": {
+    "repo": "GXDE-OS/gxde-music",
+    "upstream": "gxde-music",
+    "aur": "gxde-music-git",
+    "summary": "GXDE music player",
+    "build": "qmake6",
+    "license": "GPL-3.0-or-later"
+  },
+  "gxde-ocr": {
+    "repo": "GXDE-OS/gxde-ocr",
+    "upstream": "gxde-ocr",
+    "aur": "gxde-ocr-git",
+    "summary": "gxde-ocr",
+    "build": "cmake",
+    "license": "GPL-3.0-or-later"
+  },
+  "gxde-picker": {
+    "repo": "GXDE-OS/gxde-picker",
+    "upstream": "gxde-picker",
+    "aur": "gxde-picker-git",
+    "summary": "Color picker tool for GXDE",
+    "build": "cmake",
+    "license": "GPL-3.0-or-later"
+  },
+  "gxde-reader": {
+    "repo": "GXDE-OS/deepin-reader",
+    "upstream": "deepin-reader",
+    "aur": "gxde-reader-git",
+    "summary": "gxde-reader",
+    "build": "cmake",
+    "license": "GPL-3.0-or-later AND LGPL-3.0-or-later AND BSD-3-Clause AND CC-BY-4.0 AND CC0-1.0"
+  },
+  "gxde-roller": {
+    "repo": "GXDE-OS/deepin-compressor",
+    "upstream": "deepin-compressor",
+    "aur": "gxde-roller-git",
+    "summary": "gxde-roller",
+    "build": "cmake",
+    "license": "GPL-3.0-or-later AND GPL-2.0-or-later AND LGPL-3.0-or-later AND CC-BY-4.0 AND CC0-1.0"
+  },
+  "gxde-screen-recorder": {
+    "repo": "GXDE-OS/deepin-screen-recorder",
+    "upstream": "deepin-screen-recorder",
+    "aur": "gxde-screen-recorder-git",
+    "summary": "gxde-screen-recorder",
+    "build": "qmake6",
+    "license": "GPL-3.0-or-later AND GPL-2.0-or-later AND LGPL-3.0-or-later AND CC-BY-4.0 AND CC0-1.0"
+  },
+  "gxde-system-assistant": {
+    "repo": "GXDE-OS/gxde-system-assistant",
+    "upstream": "gxde-system-assistant",
+    "aur": "gxde-system-assistant-git",
+    "summary": "gxde-system-assistant",
+    "build": "cmake",
+    "license": "GPL-3.0-or-later"
+  },
+  "gxde-system-monitor": {
+    "repo": "GXDE-OS/deepin-system-monitor",
+    "upstream": "deepin-system-monitor",
+    "aur": "gxde-system-monitor-git",
+    "summary": "gxde-system-monitor",
+    "build": "cmake",
+    "license": "GPL-3.0-or-later AND GPL-2.0-or-later AND LGPL-3.0-or-later AND CC-BY-4.0 AND CC0-1.0"
+  },
+  "gxde-voice-recorder": {
+    "repo": "GXDE-OS/gxde-voice-recorder",
+    "upstream": "gxde-voice-recorder",
+    "aur": "gxde-voice-recorder-git",
+    "summary": "gxde-voice-recorder",
+    "build": "qmake6",
+    "license": "GPL-3.0-or-later"
+  },
+  "spark-webapp-runtime": {
+    "repo": "GXDE-OS/spark-web-app-runtime",
+    "upstream": "spark-web-app-runtime",
+    "aur": "spark-webapp-runtime-git",
+    "summary": "Spark WebApp Runtime, a simple solution for packaging web apps",
+    "build": "cmake",
+    "license": "GPL-3.0-or-later"
+  }
+}

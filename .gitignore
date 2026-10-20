@@ -1,0 +1,19 @@
+# Build Tests
+/build/
+
+# Python Cache
+*.pyc
+__pycache__/
+packages/gxde-infra/__pycache__/*
+packages/gxde-core/__pycache__/*
+packages/gxde-extra/__pycache__/*
+packages/gxde-display-manager/__pycache__/*
+packages/gxde-dtk2/__pycache__/*
+packages/gxde-dtk2-qt6/__pycache__/*
+packages/gxde-dtk5/__pycache__/*
+packages/gxde-dtk6/__pycache__/*
+scripts/__pycache__/*
+test/__pycache__/*
+
+# Personal Stuff
+.charofstring/*

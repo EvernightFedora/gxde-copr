@@ -1,0 +1,102 @@
+{
+  "version": "2026.10.12",
+  "release": 13,
+  "components": {
+    "golang-gxde-dev": {
+      "tag": "1.0.6",
+      "commit": "a1f09d503e56d75136b48074735082b15746efa0",
+      "url": "https://codeload.github.com/GXDE-OS/golang-gxde-dev/tar.gz/a1f09d503e56d75136b48074735082b15746efa0",
+      "sha256": "fe94efef8b6ceb49b855f1ba6305474e0684f3426f67cf25d27603bad4a1a40c"
+    },
+    "gxde-k9": {
+      "tag": "2.0.0-arch1",
+      "commit": "7e38aaabdcaf90c0f3daf5e37710a479a2bcb356",
+      "url": "https://codeload.github.com/GXDE-OS/gxde-k9/tar.gz/7e38aaabdcaf90c0f3daf5e37710a479a2bcb356",
+      "sha256": "cd32513fc2a8c13888e8835cb032713f7a1436ed0b09b041e677b8a31f23bf7a"
+    },
+    "disomaster-qt6": {
+      "tag": "1.0.0-arch1",
+      "commit": "99a698538e859a8447b3409059059c411ba739ec",
+      "url": "https://codeload.github.com/GXDE-OS/disomaster-qt6/tar.gz/99a698538e859a8447b3409059059c411ba739ec",
+      "sha256": "bf56415ee243f86257eda7ef0e895be187b9293b6b5b3d1272f7d24f1e74a5bc"
+    },
+    "gxde-api": {
+      "tag": "4.0.6-arch2",
+      "commit": "882473f93b6d06ee0aae490460468f6eaeb8102c",
+      "url": "https://codeload.github.com/GXDE-OS/gxde-api/tar.gz/882473f93b6d06ee0aae490460468f6eaeb8102c",
+      "sha256": "5f8db703524cf14ad3c7d467db1893f1b5a39df9c4f6ff70c5771190b7839370"
+    },
+    "deepin-keyring": {
+      "tag": "branch:master",
+      "commit": "1017a81b1451d12ab4e94bd24e3413150c7f3974",
+      "url": "https://codeload.github.com/GXDE-OS/deepin-keyring/tar.gz/1017a81b1451d12ab4e94bd24e3413150c7f3974",
+      "sha256": "343e51bfbd7059b244ac9e1f1f05fda7b0cffe7a1e04313cfe79c7766ebb2197"
+    },
+    "libgnome-keyring": {
+      "tag": "3.12.0-arch1",
+      "commit": "da7572e4bf7679ed7d023935b693ad858a608739",
+      "url": "https://codeload.github.com/GXDE-OS/libgnome-keyring/tar.gz/da7572e4bf7679ed7d023935b693ad858a608739",
+      "sha256": "0d417d622e3f2031a248426f4faee661fca205537a54d6271669aaaddd71baf6"
+    },
+    "gxde-desktop-base": {
+      "tag": "2026.10.12",
+      "commit": "6f1624c60e434cdca4348d5160fa37e5ff3af1ef",
+      "url": "https://codeload.github.com/GXDE-OS/gxde-desktop-base/tar.gz/6f1624c60e434cdca4348d5160fa37e5ff3af1ef",
+      "sha256": "8ea9181595590cd0bf67386bc8abb38b8ed3e57c6c16b822e89dae29abe48a3e"
+    },
+    "gxde-desktop-schemas": {
+      "tag": "4.0.8",
+      "commit": "4a633da7987cc61293232fc778aef1826a996ebb",
+      "url": "https://codeload.github.com/GXDE-OS/gxde-desktop-schemas/tar.gz/4a633da7987cc61293232fc778aef1826a996ebb",
+      "sha256": "33abdc2e1f59fd1e7f40bdf6bcc29d6cf95bf9dbd79671d659991333eb5dcda4"
+    },
+    "dframework-dbus-qt6": {
+      "tag": "6.0.1-arch1",
+      "commit": "c69f80f503c37b1e7fe13c1199c422b67b424116",
+      "url": "https://codeload.github.com/GXDE-OS/dframework-dbus-qt6/tar.gz/c69f80f503c37b1e7fe13c1199c422b67b424116",
+      "sha256": "4a7a684a6bf7384ec425445cbbb12f6bfa19f2ffbfb645f8f108ef2511161e7c"
+    },
+    "gxde-network-utils-qt6": {
+      "tag": "6.0.1-arch1",
+      "commit": "2d3ecd17b03e32db8013edc0d93139cb1ec3ac94",
+      "url": "https://codeload.github.com/GXDE-OS/gxde-network-utils-qt6/tar.gz/2d3ecd17b03e32db8013edc0d93139cb1ec3ac94",
+      "sha256": "bf1cfa9fa06c3972c1652b0ed6ecdf4d9a3ac67c1a1ee3538bf964e386e61228"
+    },
+    "udisks2-qt6": {
+      "tag": "6.0.1-arch1",
+      "commit": "89dee279b800b86d9a21e9341946a2c5e4a13d39",
+      "url": "https://codeload.github.com/GXDE-OS/udisks2-qt6/tar.gz/89dee279b800b86d9a21e9341946a2c5e4a13d39",
+      "sha256": "e4f7e5788302144166753173b3710a9b79a1b1bc70577d68f5ccbb1378bbedca"
+    },
+    "gxde-movie-reborn": {
+      "tag": "4.0.7-arch1",
+      "commit": "f035dac89592031f8a7c31ba4ebc4cadf4335597",
+      "url": "https://codeload.github.com/GXDE-OS/gxde-movie-reborn/tar.gz/f035dac89592031f8a7c31ba4ebc4cadf4335597",
+      "sha256": "4fc16fb527621fbb1680dadd2c5fae47423c54fe310f3819d9f265efc7bccb8b"
+    },
+    "libdbusmenu-qt6": {
+      "tag": "0.9.3+16.04.20160218-arch1",
+      "commit": "55bc2c35824316e76bde69c9d5ae61b135658f39",
+      "url": "https://codeload.github.com/GXDE-OS/libdbusmenu-qt6/tar.gz/55bc2c35824316e76bde69c9d5ae61b135658f39",
+      "sha256": "a95f589d474b5fd9b989fc9a8dd4673678c9508911da2441cb576830094beb46"
+    },
+    "treeland-protocols": {
+      "tag": "0.7.0",
+      "commit": "49e985e0fb0b55fd2299349f08bac14c4e09f2b3",
+      "url": "https://codeload.github.com/linuxdeepin/treeland-protocols/tar.gz/49e985e0fb0b55fd2299349f08bac14c4e09f2b3",
+      "sha256": "79fad4e6243b03ecac486ff2eaf2970f7e88523b38e8d1a26faf0c8b6bb2fff6"
+    },
+    "xdg-desktop-portal-gxde": {
+      "tag": "1.2.4",
+      "commit": "e8f10c150a80d64f412392c1494f492e658b6b0c",
+      "url": "https://codeload.github.com/GXDE-OS/xdg-desktop-portal-gxde/tar.gz/e8f10c150a80d64f412392c1494f492e658b6b0c",
+      "sha256": "18ff61a9cccee3556f1de1c59c6e517f0e03a866c214e659952ad3642ece750e"
+    },
+    "deepin-gettext-tools": {
+      "tag": "1.0.11-arch1",
+      "commit": "f6483cf3ca3aea7ba961a799a363d62a06ba43da",
+      "url": "https://codeload.github.com/GXDE-OS/deepin-gettext-tools/tar.gz/f6483cf3ca3aea7ba961a799a363d62a06ba43da",
+      "sha256": "76a0888cd91729c5d6ef225521f67298d6e2360c05cf40490387bbdcf9a1a466"
+    }
+  }
+}

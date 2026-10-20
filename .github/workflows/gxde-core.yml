@@ -1,0 +1,150 @@
+name: GXDE core Fedora
+on:
+  push:
+    paths: ['packages/gxde-core/**', 'scripts/**', 'tests/**', '.github/workflows/gxde-core.yml']
+  pull_request:
+    paths: ['packages/gxde-core/**', 'scripts/**', 'tests/**', '.github/workflows/gxde-core.yml']
+  schedule:
+    - cron: '43 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+concurrency:
+  group: gxde-core-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  sources:
+    runs-on: ubuntu-latest
+    outputs:
+      build: ${{ steps.resolve.outputs.build }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m unittest discover -s tests -v
+      - id: resolve
+        env:
+          EVENT: ${{ github.event_name }}
+        run: |
+          if [[ "$EVENT" == schedule || "$EVENT" == workflow_dispatch ]]; then
+            python3 scripts/gxde-core-sources.py update
+          fi
+          if [[ "$EVENT" != schedule ]] || ! git diff --quiet -- packages/gxde-core/upstream-lock.json; then
+            echo 'build=true' >> "$GITHUB_OUTPUT"
+            python3 scripts/gxde-core-sources.py prepare --group all
+          fi
+      - uses: actions/upload-artifact@v4
+        if: steps.resolve.outputs.build == 'true'
+        with:
+          name: gxde-core-sources
+          path: |
+            build/gxde-*-rpmbuild/SOURCES
+            build/gxde-*-rpmbuild/SPECS
+            packages/gxde-core/upstream-lock.json
+
+  build:
+    needs: sources
+    if: needs.sources.outputs.build == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        fedora: [44, 45]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: gxde-core-sources
+          path: .
+      - name: Build and install in Fedora
+        run: |
+          set -o pipefail
+          mkdir -p build
+          docker run --rm -v "$PWD:/work" -w /work fedora:${{ matrix.fedora }} bash scripts/build-fedora-gxde-core.sh 2>&1 | tee build/fedora.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gxde-core-fedora-${{ matrix.fedora }}
+          path: |
+            build/fedora.log
+            build/gxde-*-rpmbuild/RPMS
+            build/gxde-*-rpmbuild/SRPMS
+
+  copr:
+    needs: build
+    if: github.event_name != 'pull_request' && github.ref_name == github.event.repository.default_branch && vars.COPR_GXDE_CORE_PROJECT != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: gxde-core-fedora-44
+          path: result
+      - name: Submit wave by wave after both Fedora builds pass
+        env:
+          COPR_CONFIG: ${{ secrets.COPR_CONFIG }}
+          COPR_GXDE_CORE_PROJECT: ${{ vars.COPR_GXDE_CORE_PROJECT }}
+        run: |
+          set -euo pipefail
+          test -n "$COPR_CONFIG"
+          python3 -m pip install --user copr-cli
+          umask 077
+          config=$(mktemp)
+          trap 'rm -f "$config"' EXIT
+          printf '%s\n' "$COPR_CONFIG" > "$config"
+          copr="$HOME/.local/bin/copr-cli --config $config"
+          chroots=(--chroot fedora-44-x86_64 --chroot fedora-44-aarch64
+                   --chroot fedora-45-x86_64 --chroot fedora-45-aarch64)
+          # Same waves as scripts/build-fedora-gxde-core.sh; intra-wave builds
+          # are submitted --nowait in parallel, then watched before the next
+          # wave so intra-project BuildRequires exist in the project repo.
+          waves=(
+            'gxde-artwork gxde-libs gxde-daemon gxde-polkit-agent gxde-installer
+             gxde-screensaver gxde-terminal gxde-compressor gxde-launcher
+             gxde-session-ui gxde-app-management'
+            'gxde-dock gxde-control-center'
+            'gxde-top-panel gxde-file-manager'
+            'gxde-search'
+            'gxde-core'
+          )
+          for wave in "${waves[@]}"; do
+            ids=()
+            for g in $wave; do
+              mapfile -t srpms < <(find result -name "$g-*.src.rpm")
+              test "${#srpms[@]}" -eq 1
+              # COPR attributes builds to packages by the SRPM Name: tag.
+              out=$($copr build --nowait "${chroots[@]}" \
+                  "$COPR_GXDE_CORE_PROJECT" "${srpms[0]}")
+              echo "$out"
+              id=$(sed -nE 's/^Created builds: ([0-9]+).*$/\1/p; s/^Build ([0-9]+).*$/\1/p' <<<"$out" | head -n1)
+              test -n "$id"
+              ids+=("$id")
+            done
+            $copr watch-build "${ids[@]}"
+          done
+
+  record:
+    needs: [sources, build, copr]
+    if: >-
+      always() && needs.build.result == 'success' &&
+      (needs.copr.result == 'success' || needs.copr.result == 'skipped') &&
+      (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') &&
+      github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: gxde-core-sources
+          path: candidate
+      - name: Record successfully built tags
+        run: |
+          cp candidate/packages/gxde-core/upstream-lock.json packages/gxde-core/upstream-lock.json
+          if ! git diff --quiet; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add packages/gxde-core/upstream-lock.json
+            git commit -m 'Update GXDE core release tags after Fedora builds'
+            git push
+          fi

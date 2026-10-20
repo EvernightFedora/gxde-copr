@@ -1,0 +1,48 @@
+{
+  "version": "6.0.48.gxde1",
+  "release": 2,
+  "components": {
+    "dtk6log": {
+      "tag": "0.0.6-1",
+      "commit": "2d60b04b377bf0a3a7ffcfc71f07947446945efc",
+      "url": "https://codeload.github.com/GXDE-OS/dtk6log/tar.gz/2d60b04b377bf0a3a7ffcfc71f07947446945efc",
+      "sha256": "799d68794885a73a8c7c134caf3e84f5d1c5d4d40b7ffad87154f2559d512583"
+    },
+    "dtk6core": {
+      "tag": "6.0.48-gxde1",
+      "commit": "5b38ef81734ebb6e583764f2a29f359040d8dcb1",
+      "url": "https://codeload.github.com/GXDE-OS/dtk6core/tar.gz/5b38ef81734ebb6e583764f2a29f359040d8dcb1",
+      "sha256": "6a9252e3628c6dbc8586698fda0545498874e271b445e401b003d047b25f44f8"
+    },
+    "dtk6gui": {
+      "tag": "6.0.48",
+      "commit": "03341acfb52ece10294a7c2baa61481d94121f3e",
+      "url": "https://codeload.github.com/GXDE-OS/dtk6gui/tar.gz/03341acfb52ece10294a7c2baa61481d94121f3e",
+      "sha256": "3872ae10000b1ca55034d3ee88593f9228ff278ee5fb408519459ecd957d0252"
+    },
+    "dtk6widget": {
+      "tag": "6.0.48-gxde4",
+      "commit": "f5cdaf4f38a5eb4cea0d43e422c443bbef2a1c12",
+      "url": "https://codeload.github.com/GXDE-OS/dtk6widget/tar.gz/f5cdaf4f38a5eb4cea0d43e422c443bbef2a1c12",
+      "sha256": "cb89632b350a2c58443b3060dab479ee41efed1af6337361a6d29f8fafc9b841"
+    },
+    "dtk6declarative": {
+      "tag": "6.0.48-gxde1",
+      "commit": "af444c3e16964764a39087adb6e6a6777263d59e",
+      "url": "https://codeload.github.com/GXDE-OS/dtk6declarative/tar.gz/af444c3e16964764a39087adb6e6a6777263d59e",
+      "sha256": "7aaa8aa2b50ceb457653373e2ec289b19770fd12161a92eb746fca0c51017802"
+    },
+    "dde-qt6platform-plugins": {
+      "tag": "6.0.48-2",
+      "commit": "bb3c47f54bde22685afa761cc1437d287dd68379",
+      "url": "https://codeload.github.com/GXDE-OS/dde-qt6platform-plugins/tar.gz/bb3c47f54bde22685afa761cc1437d287dd68379",
+      "sha256": "ba6e4a7332abb470c11fe68ae330f519b7ba4b4b9f914a8c554e4c4dd7c3c609"
+    },
+    "qt6integration": {
+      "tag": "6.0.35",
+      "commit": "3160a37c8cdcc36c0081e16e9d90c7317b59a502",
+      "url": "https://codeload.github.com/GXDE-OS/qt6integration/tar.gz/3160a37c8cdcc36c0081e16e9d90c7317b59a502",
+      "sha256": "d55f00b28522ba6908848951377c071d98764b3dbd8b228a1082a8a1ab18b159"
+    }
+  }
+}

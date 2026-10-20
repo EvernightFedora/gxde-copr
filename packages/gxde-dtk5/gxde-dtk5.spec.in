@@ -1,0 +1,105 @@
+# Generated from upstream-lock.json by scripts/dtk5-sources.py.
+@COMMITS@
+Name:           gxde-dtk5
+Version:        @VERSION@
+Release:        @RELEASE@%{?dist}
+Summary:        GXDE Qt 5 toolkit and desktop integration
+License:        LGPL-3.0-or-later AND LGPL-2.1-or-later AND BSD-3-Clause AND GPL-3.0-or-later
+URL:            https://github.com/GXDE-OS
+@SOURCES@
+Source10:       build.sh
+Source11:       split-files.py
+Source12:       sources.sha256
+Source13:       upstream-lock.json
+
+ExclusiveArch:  x86_64 aarch64
+BuildRequires:  gcc-c++ cmake ninja-build make python3
+BuildRequires:  qt5-rpm-macros qt5-qtbase-devel qt5-qtbase-private-devel
+BuildRequires:  qt5-qtbase-static qt5-qttools-devel qt5-linguist
+BuildRequires:  qt5-qtsvg-devel qt5-qtx11extras-devel qt5-qtwayland-devel
+BuildRequires:  extra-cmake-modules kf5-kwayland-devel
+BuildRequires:  spdlog-devel libicu-devel
+BuildRequires:  pkgconfig(gsettings-qt) pkgconfig(uchardet) pkgconfig(libsystemd)
+BuildRequires:  pkgconfig(librsvg-2.0) pkgconfig(dbus-1)
+BuildRequires:  pkgconfig(x11) pkgconfig(x11-xcb) pkgconfig(xext) pkgconfig(xi)
+BuildRequires:  pkgconfig(xcb-util) pkgconfig(libstartup-notification-1.0)
+BuildRequires:  pkgconfig(xcb-renderutil) pkgconfig(sm) pkgconfig(ice)
+BuildRequires:  pkgconfig(xcb-render) pkgconfig(xcb) pkgconfig(xcb-image)
+BuildRequires:  pkgconfig(xcb-icccm) pkgconfig(xcb-sync) pkgconfig(xcb-xfixes)
+BuildRequires:  pkgconfig(xcb-shm) pkgconfig(xcb-randr) pkgconfig(xcb-shape)
+BuildRequires:  pkgconfig(xcb-keysyms) pkgconfig(xcb-xkb) pkgconfig(xcb-composite)
+BuildRequires:  pkgconfig(xcb-damage) pkgconfig(xcb-xinerama) pkgconfig(xkbcommon-x11)
+BuildRequires:  pkgconfig(mtdev) pkgconfig(egl) pkgconfig(cairo)
+BuildRequires:  pkgconfig(wayland-client) pkgconfig(wayland-cursor) pkgconfig(xkbcommon)
+Requires:       qt5-filesystem
+Recommends:     lshw
+Conflicts:      dtkcommon dtkcore dtkgui dtkwidget dtklog
+Conflicts:      deepin-qt5integration deepin-qt5platform-plugins qt5platform-plugins
+
+%description
+GXDE's Qt 5 toolkit: common configuration, logging, core, GUI, widgets,
+XCB/Wayland platform plugins and desktop integration. This fork shares
+library names with Deepin DTK and cannot be installed alongside it.
+
+%package devel
+Summary:        GXDE DTK5 common, logging, core and GUI development files
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       qt5-qtbase-devel%{?_isa}
+Conflicts:      dtkcommon-devel dtkcore-devel dtkgui-devel dtklog-devel
+
+%description devel
+Headers, CMake, pkg-config and qmake metadata for the base DTK5 libraries.
+Widget development files are separate to allow the DTK2 widget alternative.
+
+%package widget-devel
+Summary:        GXDE DTK5 widget development files
+Requires:       %{name}-devel%{?_isa} = %{version}-%{release}
+Conflicts:      dtkwidget-devel gxde-dtk2widget-devel gxde-dtk2-widget-devel
+
+%description widget-devel
+DTK5 widget headers and linker metadata. Corresponds to the AUR
+gxde-dtk5widget-dev-git package.
+
+%prep
+# Verify all archives before extracting them. No network access during rpmbuild.
+(cd %{_sourcedir} && sha256sum -c %{SOURCE12})
+%setup -q -c -T -a 0 -a 1 -a 2 -a 3 -a 4 -a 5 -a 6
+mv dtk5common-%{commit0} dtk5common
+mv dtklog-%{commit1} dtklog
+mv dtk5core-%{commit2} dtk5core
+mv dtk5gui-%{commit3} dtk5gui
+mv dtk5widget-%{commit4} dtk5widget
+mv dde-qt5platform-plugins-%{commit5} dde-qt5platform-plugins
+mv dde-qt5integration-%{commit6} dde-qt5integration
+cp %{SOURCE13} upstream-lock.json
+mkdir licenses
+for module in dtk5common dtk5core dtk5gui dtk5widget dde-qt5platform-plugins dde-qt5integration; do
+    cp "$module/LICENSE" "licenses/$module.LICENSE"
+done
+cp dtklog/LICENSE.LGPL licenses/dtklog.LICENSE.LGPL
+
+%build
+%set_build_flags
+export PATH=%{_qt5_bindir}:$PATH
+bash %{SOURCE10} "%{_libdir}" "%{_libexecdir}" "%{_qt5_archdatadir}" "%{_qt5_headerdir}" "@COMMON_VERSION@" "%{_smp_build_ncpus}"
+
+%install
+for module in dtk5common dtklog dtk5core dtk5gui dtk5widget dde-qt5platform-plugins dde-qt5integration; do
+    DESTDIR=%{buildroot} cmake --install "build-$module"
+done
+python3 %{SOURCE11} %{buildroot} %{_libdir} %{_qt5_archdatadir}
+
+%check
+# Catch accidental staging/build-path leakage in installed development metadata.
+if grep -R -l -F "$PWD/stage" %{buildroot}%{_libdir}/cmake %{buildroot}%{_libdir}/pkgconfig; then
+    echo 'Staging path leaked into installed metadata' >&2
+    exit 1
+fi
+
+%files -f runtime.files
+%license licenses/
+%doc upstream-lock.json
+
+%files devel -f devel.files
+
+%files widget-devel -f widget-devel.files

@@ -1,0 +1,24 @@
+{
+  "version": "2.5.gxde2",
+  "release": 6,
+  "components": {
+    "dde-qt-dbus-factory": {
+      "tag": "6.1.0-gxde6",
+      "commit": "7278ee0df4eda911f2860d1a5d73979c4afe781d",
+      "url": "https://codeload.github.com/GXDE-OS/dde-qt-dbus-factory/tar.gz/7278ee0df4eda911f2860d1a5d73979c4afe781d",
+      "sha256": "47d67e72611b74da51ad2f2d729162a915a0f22a54e588ac9bed00e91f0174d6"
+    },
+    "dtk2widget": {
+      "tag": "2.5-gxde2",
+      "commit": "62628ba1798a7efaf19d23c72350c67900de776e",
+      "url": "https://codeload.github.com/GXDE-OS/dtk2widget/tar.gz/62628ba1798a7efaf19d23c72350c67900de776e",
+      "sha256": "c9ebec356a993b68bd604103764a978893952985ac1d112672d0c55e8e430a12"
+    },
+    "gxde-qt5integration": {
+      "tag": "0.3.12-2",
+      "commit": "bba746a070aab10271242e17548adce73f8dc5a9",
+      "url": "https://codeload.github.com/GXDE-OS/gxde-qt5integration/tar.gz/bba746a070aab10271242e17548adce73f8dc5a9",
+      "sha256": "a55fc597ce3759d640d4d7d768e072e8b79be7f2476680ada0a33a4786c43756"
+    }
+  }
+}

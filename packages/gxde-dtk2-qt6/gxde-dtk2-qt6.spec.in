@@ -1,0 +1,76 @@
+# Generated from upstream-lock.json; source patches are listed in PATCHES.md.
+@COMMITS@
+Name:           gxde-dtk2-qt6
+Version:        @VERSION@
+Release:        @RELEASE@%{?dist}
+Summary:        GXDE legacy DTK2 widgets ported to Qt6
+License:        LGPL-3.0-or-later AND GPL-3.0-or-later
+URL:            https://github.com/GXDE-OS
+@SOURCES@
+Source10:       build.sh
+Source11:       split-files.py
+Source12:       sources.sha256
+Source13:       upstream-lock.json
+ExclusiveArch:  x86_64 aarch64
+BuildRequires:  gcc-c++ make python3
+BuildRequires:  gxde-dtk6-devel >= 6.0.48.gxde1
+BuildRequires:  qt6-rpm-macros qt6-qtbase-devel qt6-qtbase-private-devel
+BuildRequires:  qt6-qttools-devel qt6-qtsvg-devel qt6-qtmultimedia-devel
+BuildRequires:  qt6-qtscxml-devel qt6-qtwayland-devel
+BuildRequires:  layer-shell-qt-devel
+BuildRequires:  pkgconfig(gsettings-qt6) pkgconfig(librsvg-2.0) pkgconfig(cairo)
+BuildRequires:  pkgconfig(wayland-client) pkgconfig(x11) pkgconfig(xext)
+BuildRequires:  pkgconfig(xi) pkgconfig(xcb) pkgconfig(xcb-util)
+BuildRequires:  pkgconfig(libstartup-notification-1.0)
+Requires:       gxde-dtk6 >= 6.0.48.gxde1
+Requires:       gsettings-qt6
+Requires:       qt6-filesystem
+Conflicts:      dtk2widget-qt6 gxde-qt6-integration
+
+%description
+The GXDE DTK2 Widget Qt6 port and its Qt6 style integration plugin.
+
+%package devel
+Summary:        Development files for GXDE DTK2 Widget Qt6
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       gxde-dtk6-devel >= 6.0.48.gxde1
+Conflicts:      dtk2widget-qt6-devel
+
+%description devel
+Headers, linker symlinks, pkg-config, qmake and CMake metadata.
+
+%prep
+(cd %{_sourcedir} && sha256sum -c %{SOURCE12})
+%setup -q -c -T -a 0 -a 1
+mv dtk2widget-qt6-%{commit0} dtk2widget-qt6
+mv gxde-qt6-integration-%{commit1} gxde-qt6-integration
+cp %{SOURCE13} upstream-lock.json
+mkdir licenses
+cp dtk2widget-qt6/LICENSE licenses/dtk2widget-qt6.LICENSE
+cp gxde-qt6-integration/LICENSE licenses/gxde-qt6-integration.LICENSE
+
+%build
+%set_build_flags
+export PATH=%{_qt6_bindir}:$PATH
+bash %{SOURCE10} "%{_libdir}" "%{_smp_build_ncpus}"
+
+%install
+for module in dtk2widget-qt6 gxde-qt6-integration; do
+    make -C "build-$module" INSTALL_ROOT=%{buildroot} install
+done
+sed -i -e 's|^Requires: dtkcore$|Requires: dtk6core|' \
+       -e 's|^Libs: -ldtk2widget|Libs: -L${libdir} -ldtk2widget|' \
+       %{buildroot}%{_libdir}/pkgconfig/dtk2widget.pc
+python3 %{SOURCE11} %{buildroot} %{_libdir} %{_qt6_archdatadir}
+
+%check
+if grep -R -l -F "$PWD/stage" %{buildroot}%{_libdir}/pkgconfig %{buildroot}%{_libdir}/cmake; then
+    echo 'Staging path leaked into installed metadata' >&2
+    exit 1
+fi
+
+%files -f runtime.files
+%license licenses/
+%doc upstream-lock.json
+
+%files devel -f devel.files

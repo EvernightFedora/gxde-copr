@@ -1,0 +1,8 @@
+#%PAM-1.0
+# Fedora PAM for gxdm greeter. Same as upstream — already generic.
+auth		required pam_env.so
+auth		required pam_permit.so
+account		required pam_permit.so
+password	required pam_deny.so
+session		required pam_unix.so
+session		optional pam_systemd.so

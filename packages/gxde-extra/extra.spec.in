@@ -1,0 +1,50 @@
+# Generated from manifest.json and upstream-lock.json. Fedora adaptations are
+# recorded in PATCHES.md; the downloaded source is pinned to a release commit.
+%global source_tag @TAG@
+%global source_commit @COMMIT@
+%global __brp_compress %{nil}
+@DEBUG@
+Name:           @NAME@
+Version:        @VERSION@
+Release:        @RELEASE@%{?dist}
+Summary:        @SUMMARY@
+License:        @LICENSE@
+URL:            https://github.com/@REPO@
+@SOURCE@
+Source100:      sources.sha256
+Source101:      build.sh
+Source102:      split-files.py
+Source103:      upstream-lock.json
+Source104:      deepin-policy-ts-convert
+Source105:      deepin-desktop-ts-convert
+@ARCH@
+@BUILDREQS@
+@REQUIRES@
+@PROVIDES@
+
+%description
+GXDE application packaged from the latest pinned upstream release tag.
+
+%prep
+(cd %{_sourcedir} && sha256sum -c %{SOURCE100})
+%setup -q -c -T -a 0
+mv @UPSTREAM@-%{source_commit} upstream
+cp %{SOURCE103} upstream-lock.json
+cp %{SOURCE104} deepin-policy-ts-convert
+cp %{SOURCE105} deepin-desktop-ts-convert
+
+%build
+%set_build_flags
+bash %{SOURCE101} "%{name}" "%{source_tag}" "%{_libdir}" "%{_smp_build_ncpus}"
+
+%install
+cp -a stage/. %{buildroot}/
+find %{buildroot} -type f -name '*.la' -delete
+python3 %{SOURCE102} %{buildroot}
+
+%files -f runtime.files
+%doc upstream-lock.json
+
+%changelog
+* Tue Oct 20 2026 CharOfString <root@charofstring.cc> - @VERSION@-@RELEASE@
+- Package GXDE AUR application from a pinned upstream release for Fedora 44 and 45
