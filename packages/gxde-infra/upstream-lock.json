@@ -1,6 +1,6 @@
 {
   "version": "2026.10.12",
-  "release": 13,
+  "release": 14,
   "components": {
     "golang-gxde-dev": {
       "tag": "1.0.6",
@@ -87,10 +87,10 @@
       "sha256": "79fad4e6243b03ecac486ff2eaf2970f7e88523b38e8d1a26faf0c8b6bb2fff6"
     },
     "xdg-desktop-portal-gxde": {
-      "tag": "1.2.4",
-      "commit": "e8f10c150a80d64f412392c1494f492e658b6b0c",
-      "url": "https://codeload.github.com/GXDE-OS/xdg-desktop-portal-gxde/tar.gz/e8f10c150a80d64f412392c1494f492e658b6b0c",
-      "sha256": "18ff61a9cccee3556f1de1c59c6e517f0e03a866c214e659952ad3642ece750e"
+      "tag": "1.2.5",
+      "commit": "c16a49325a5a1c36262990a560e3a5658b4cd33f",
+      "url": "https://codeload.github.com/GXDE-OS/xdg-desktop-portal-gxde/tar.gz/c16a49325a5a1c36262990a560e3a5658b4cd33f",
+      "sha256": "b0adce244a15c3e79f5024156dd8714692b1daaa0f34ffa7156482b32974bb5e"
     },
     "deepin-gettext-tools": {
       "tag": "1.0.11-arch1",

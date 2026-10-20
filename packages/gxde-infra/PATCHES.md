@@ -2,6 +2,11 @@
 
 当前新增源码补丁：**1 项**。
 
+## xdg-desktop-portal-gxde 1.2.5 手动更新
+
+- 从正式标签 `1.2.4` 更新到 `1.2.5`（提交 `c16a49325a5a`）；录屏 PipeWire 缓冲区标志修复已由上游提交 `58d31d2` 提供。
+- 此次 **没有新增 RPM 源码补丁**；原有的 `0001-network-utils-lrelease-path.patch` 继续用于另一个组件。上游自带的 `patch_dmabuf_header.py` 在新标签中仍存在，不属于 RPM 补丁。
+
 ## 0001-network-utils-lrelease-path.patch
 
 - 组件/tag：`gxde-network-utils-qt6 6.0.1-arch1`，提交 `2d3ecd17b03e`。
