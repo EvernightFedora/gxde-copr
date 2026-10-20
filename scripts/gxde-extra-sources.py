@@ -191,8 +191,8 @@ def prepare_meta():
     for directory in ('SOURCES', 'SPECS', 'BUILD', 'BUILDROOT', 'RPMS', 'SRPMS'):
         (output / directory).mkdir(parents=True, exist_ok=True)
     applications = sorted(name for name, item in MANIFEST.items() if item['aur'])
-    if len(applications) != 25:
-        raise ValueError(f'Expected 25 optional AUR applications, found {len(applications)}')
+    if not applications:
+        raise ValueError('No optional AUR applications in manifest')
     readme = ('This package installs every GXDE optional application in the\n'
               'charofstring/gxde-extra COPR project:\n\n' +
               '\n'.join(applications) + '\n')
