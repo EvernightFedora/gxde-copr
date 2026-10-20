@@ -9,6 +9,19 @@ flakewm = load('flakewm_sources', 'scripts/flakewm-sources.py')
 
 
 class Tags(unittest.TestCase):
+    def test_resolves_tags_from_gxde_upstream(self):
+        commit = 'a' * 40
+        with patch.object(flakewm.sources.subprocess, 'check_output',
+                          return_value=f'{commit} refs/tags/3.0.3-gxde1\n') as ls_remote, \
+             patch.object(flakewm.sources, 'download', return_value='checksum'):
+            lock = flakewm.resolve({}, Path('unused'))
+        ls_remote.assert_called_once_with(
+            ['git', 'ls-remote', '--tags',
+             'https://github.com/GXDE-OS/flake-wm.git'],
+            text=True, timeout=120)
+        self.assertEqual(lock['components']['flakewm']['url'],
+                         f'https://codeload.github.com/GXDE-OS/flake-wm/tar.gz/{commit}')
+
     def test_gxde_suffix_preferred(self):
         refs = ('a refs/tags/3.0.0-gxde2\n'
                 'b refs/tags/3.0.0-gxde2^{}\n'

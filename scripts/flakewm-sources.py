@@ -14,6 +14,7 @@ sources.CORE_MODULE = 'flakewm'
 sources.SPEC_NAME = 'flakewm'
 sources.PACKAGE = sources.ROOT / 'packages/flakewm'
 sources.DEFAULT_OUTPUT = sources.ROOT / 'build/flakewm-rpmbuild'
+UPSTREAM = 'GXDE-OS/flake-wm'
 
 TAG = re.compile(r'v?(\d+(?:\.\d+)*)(?:-?gxde(\d+))?$')
 
@@ -54,7 +55,7 @@ def resolve(old, cache):
     components = {}
     for name in sources.MODULES:
         refs = subprocess.check_output(['git', 'ls-remote', '--tags',
-                                        f'https://github.com/flake-wm/flake-wm.git'],
+                                        f'https://github.com/{UPSTREAM}.git'],
                                        text=True, timeout=120)
         tag, commit = latest_tag(refs)
         previous = old.get('components', {}).get(name)
@@ -62,7 +63,7 @@ def resolve(old, cache):
             raise ValueError(f'{name}: upstream tag rollback requires manual review')
         if previous and previous['tag'] == tag and previous['commit'] != commit:
             raise ValueError(f'{name}: released tag moved; refusing automatic update')
-        url = f'https://codeload.github.com/flake-wm/flake-wm/tar.gz/{commit}'
+        url = f'https://codeload.github.com/{UPSTREAM}/tar.gz/{commit}'
         item = {'tag': tag, 'commit': commit, 'url': url}
         item['sha256'] = sources.download(url, cache / f'{name}-{commit}.tar.gz',
                                           previous['sha256'] if previous and previous['commit'] == commit else None)

@@ -5,7 +5,7 @@ Version:        @VERSION@
 Release:        @RELEASE@%{?dist}
 Summary:        GXDE Wayland compositor
 License:        GPL-3.0-or-later
-URL:            https://github.com/flake-wm/flake-wm
+URL:            https://github.com/GXDE-OS/flake-wm
 @SOURCES@
 Source100:      build.sh
 Source101:      sources.sha256
