@@ -1,15 +1,23 @@
 {
   "dde-clipboard": {
     "version": "6.6.2",
-    "release": 1,
+    "release": 4,
     "tag": "6.6.2",
     "commit": "76a0e730ccb72d9e0a5dba5ee259d15befccd481",
     "url": "https://codeload.github.com/GXDE-OS/dde-clipboard/tar.gz/76a0e730ccb72d9e0a5dba5ee259d15befccd481",
     "sha256": "ca42d399b67c5201c869e1198ff7feae94f29ea2455c2276b2b02e473962d4ad"
   },
+  "gio-qt6": {
+    "version": "0.0.16",
+    "release": 1,
+    "tag": "0.0.16",
+    "commit": "f4661fae505962e63a181573d195cfb4ff510eb1",
+    "url": "https://codeload.github.com/linuxdeepin/gio-qt/tar.gz/f4661fae505962e63a181573d195cfb4ff510eb1",
+    "sha256": "5c705df881b686fd5ffd2810ed4f08b9615999f320e2a1b187235851a020f513"
+  },
   "gxde-boot-maker": {
     "version": "3.0.0",
-    "release": 1,
+    "release": 4,
     "tag": "3.0.0",
     "commit": "000cdb8b21dbf97fceb8bd0445d24dd6f38e181b",
     "url": "https://codeload.github.com/GXDE-OS/gxde-boot-maker/tar.gz/000cdb8b21dbf97fceb8bd0445d24dd6f38e181b",
@@ -25,7 +33,7 @@
   },
   "gxde-calendar": {
     "version": "6.0.3",
-    "release": 1,
+    "release": 2,
     "tag": "6.0.3",
     "commit": "d94ef234241905b311cb6b77b1b1d3e2a90b39d3",
     "url": "https://codeload.github.com/GXDE-OS/gxde-calendar/tar.gz/d94ef234241905b311cb6b77b1b1d3e2a90b39d3",
@@ -33,7 +41,7 @@
   },
   "gxde-camera": {
     "version": "6.5.48",
-    "release": 1,
+    "release": 8,
     "tag": "6.5.48",
     "commit": "9625ca7e853c3c6b3aaea37805df8ced0beaa957",
     "url": "https://codeload.github.com/GXDE-OS/deepin-camera/tar.gz/9625ca7e853c3c6b3aaea37805df8ced0beaa957",
@@ -41,7 +49,7 @@
   },
   "gxde-clone": {
     "version": "1.1.3",
-    "release": 1,
+    "release": 2,
     "tag": "1.1.3",
     "commit": "d24d3cc6f42c91b35919080b10651fb25c4ee098",
     "url": "https://codeload.github.com/GXDE-OS/deepin-clone/tar.gz/d24d3cc6f42c91b35919080b10651fb25c4ee098",
@@ -73,7 +81,7 @@
   },
   "gxde-editor": {
     "version": "2.0.10",
-    "release": 1,
+    "release": 3,
     "tag": "2.0.10",
     "commit": "83a10eb7698982cabeadcbf80418293968ccf2e1",
     "url": "https://codeload.github.com/GXDE-OS/gxde-editor/tar.gz/83a10eb7698982cabeadcbf80418293968ccf2e1",
@@ -97,7 +105,7 @@
   },
   "gxde-hardware-viewer": {
     "version": "2.7.2",
-    "release": 1,
+    "release": 2,
     "tag": "2.7.2",
     "commit": "46e0d1db29222cb2891e4aea525555324e83a6a6",
     "url": "https://codeload.github.com/GXDE-OS/gxde-hardware-viewer/tar.gz/46e0d1db29222cb2891e4aea525555324e83a6a6",
@@ -105,7 +113,7 @@
   },
   "gxde-image-viewer": {
     "version": "1.7.5",
-    "release": 1,
+    "release": 2,
     "tag": "1.7.5",
     "commit": "a514245316372edb570c22c58e9c5baa66fe1dd5",
     "url": "https://codeload.github.com/GXDE-OS/gxde-image-viewer/tar.gz/a514245316372edb570c22c58e9c5baa66fe1dd5",
@@ -113,7 +121,7 @@
   },
   "gxde-log-viewer": {
     "version": "6.5.42",
-    "release": 1,
+    "release": 4,
     "tag": "6.5.42",
     "commit": "b33fb6bbd308457e71bdf3f0be61464868f0c6ef",
     "url": "https://codeload.github.com/GXDE-OS/deepin-log-viewer/tar.gz/b33fb6bbd308457e71bdf3f0be61464868f0c6ef",
@@ -121,7 +129,7 @@
   },
   "gxde-music": {
     "version": "4.0.1",
-    "release": 1,
+    "release": 2,
     "tag": "4.0.1",
     "commit": "d1a2fe2fa2e7099d468bc47b123a012d27a8279c",
     "url": "https://codeload.github.com/GXDE-OS/gxde-music/tar.gz/d1a2fe2fa2e7099d468bc47b123a012d27a8279c",
@@ -129,7 +137,7 @@
   },
   "gxde-ocr": {
     "version": "2.0.1",
-    "release": 1,
+    "release": 2,
     "tag": "2.0.1",
     "commit": "8c9728da88491e7bc880c78303577ff178be65f0",
     "url": "https://codeload.github.com/GXDE-OS/gxde-ocr/tar.gz/8c9728da88491e7bc880c78303577ff178be65f0",
@@ -137,7 +145,7 @@
   },
   "gxde-picker": {
     "version": "2.0.4",
-    "release": 1,
+    "release": 2,
     "tag": "2.0.4",
     "commit": "bfc51a281d70763893aa2aa9018ad948399676b9",
     "url": "https://codeload.github.com/GXDE-OS/gxde-picker/tar.gz/bfc51a281d70763893aa2aa9018ad948399676b9",
@@ -145,7 +153,7 @@
   },
   "gxde-reader": {
     "version": "6.6.2",
-    "release": 1,
+    "release": 4,
     "tag": "6.6.2",
     "commit": "3bfc5d1ac7bdcd282d5e77bff2c89f5a0b3531d2",
     "url": "https://codeload.github.com/GXDE-OS/deepin-reader/tar.gz/3bfc5d1ac7bdcd282d5e77bff2c89f5a0b3531d2",
@@ -161,7 +169,7 @@
   },
   "gxde-screen-recorder": {
     "version": "7.0.2.gxde2",
-    "release": 1,
+    "release": 4,
     "tag": "7.0.2-gxde2",
     "commit": "e6a572685ec74f7d9e91bcdfdf27a5a590b95e85",
     "url": "https://codeload.github.com/GXDE-OS/deepin-screen-recorder/tar.gz/e6a572685ec74f7d9e91bcdfdf27a5a590b95e85",
@@ -177,7 +185,7 @@
   },
   "gxde-system-monitor": {
     "version": "6.5.46",
-    "release": 1,
+    "release": 4,
     "tag": "6.5.46",
     "commit": "461b28e765cab00f7222888ab870cf1592c8f5f3",
     "url": "https://codeload.github.com/GXDE-OS/deepin-system-monitor/tar.gz/461b28e765cab00f7222888ab870cf1592c8f5f3",
@@ -190,6 +198,14 @@
     "commit": "c6a6360a9d598f93e306036b4b295e9ff026ddb4",
     "url": "https://codeload.github.com/GXDE-OS/gxde-voice-recorder/tar.gz/c6a6360a9d598f93e306036b4b295e9ff026ddb4",
     "sha256": "7f6b8626ea2bcfbfbdb99c5d39ed77666b51f62356de85132db48620d618db05"
+  },
+  "libimagevisualresult6": {
+    "version": "6.5.2",
+    "release": 3,
+    "tag": "6.5.2",
+    "commit": "55231d84fa7221cfc6fb2ee0204c470840537b62",
+    "url": "https://codeload.github.com/linuxdeepin/image-editor/tar.gz/55231d84fa7221cfc6fb2ee0204c470840537b62",
+    "sha256": "45dcb118627eb8e38dcf4d853b7b4692ab337a6d210f01e4e77467c982fe1437"
   },
   "spark-webapp-runtime": {
     "version": "1.8.2",

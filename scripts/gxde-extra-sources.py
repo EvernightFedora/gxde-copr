@@ -22,34 +22,43 @@ QT6_WIDGET = {'gxde-boot-maker', 'gxde-calendar', 'gxde-dict',
               'gxde-voice-recorder'}
 
 EXTRA_BUILDREQS = {
-    'dde-clipboard': ['extra-cmake-modules kf6-kwayland-devel',
+    'dde-clipboard': ['qt6-qtbase-private-devel gio-qt6-devel',
+                      'extra-cmake-modules kf6-kwayland-devel',
                       'cups-devel systemd-devel vulkan-headers wayland-devel'],
-    'gxde-boot-maker': ['xcb-util-devel startup-notification-devel'],
+    'gxde-boot-maker': ['qt6-qtmultimedia-devel qt6-qtscxml-devel',
+                        'pkgconfig(xext) xcb-util-devel startup-notification-devel'],
     'gxde-calendar': ['libical-devel'],
     'gxde-camera': ['pkgconfig(libavformat) pkgconfig(libavcodec) pkgconfig(libavutil)',
+                    'pkgconfig(libswscale) pkgconfig(libswresample)',
+                    'libva-devel systemd-devel',
                     'qt6-qtmultimedia-devel pkgconfig(gstreamer-1.0)',
-                    'portaudio-devel libusb1-devel libpciaccess-devel'],
-    'gxde-clone': ['gxde-file-manager-devel'],
+                    'pkgconfig(gstreamer-app-1.0)',
+                    'libimagevisualresult6-devel ffmpegthumbnailer-devel',
+                    'portaudio-devel libusb1-devel libv4l-devel libpciaccess-devel'],
+    'gxde-clone': ['qt5-qtbase-private-devel perl-interpreter',
+                   'perl-XML-LibXML perl-Config-Tiny'],
     'gxde-dict': ['qt6-qtmultimedia-devel pkgconfig(x11) pkgconfig(xext) pkgconfig(xtst)'],
     'gxde-dlna-caster': ['qt6-qtwebsockets-devel pkgconfig(libpipewire-0.3)',
                          'pkgconfig(libavformat)'],
-    'gxde-editor': ['qt6-qtwebengine-devel qt6-qtwebchannel-devel',
-                    'kf6-kcodecs-devel kf6-ksyntaxhighlighting-devel',
+    'gxde-editor': ['qt6-qtbase-private-devel qt6-qtwebengine-devel qt6-qtwebchannel-devel',
+                    'kf6-kcodecs-devel kf6-syntax-highlighting-devel',
                     'polkit-qt6-1-devel pkgconfig(xcb) xcb-util-devel'],
     'gxde-font-manager': ['pkgconfig(fontconfig) pkgconfig(freetype2)'],
-    'gxde-image-viewer': ['libexif-devel glib2-devel pkgconfig(x11)',
+    'gxde-image-viewer': ['qt6-qtmultimedia-devel qt6-qtscxml-devel',
+                          'libexif-devel glib2-devel pkgconfig(x11)',
                           'pkgconfig(xext) freeimage-devel LibRaw-devel'],
-    'gxde-log-viewer': ['boost-devel rapidjson-devel libzip-devel minizip-devel',
-                        'xerces-c-devel polkit-qt6-1-devel',
-                        'gsettings-qt6-devel pkgconfig(zlib)'],
-    'gxde-music': ['qt6-qtmultimedia-devel taglib-devel libcue-devel icu-devel',
+    'gxde-log-viewer': ['boost-devel rapidjson-devel libzip-devel',
+                        'xerces-c-devel polkit-qt6-1-devel systemd-devel',
+                        'gsettings-qt6-devel gio-qt6-devel pkgconfig(zlib)'],
+    'gxde-music': ['qt6-qtmultimedia-devel taglib-devel libcue-devel libicu-devel',
                    'pkgconfig(libavformat) pkgconfig(libavcodec) pkgconfig(libavutil)',
                    'pkgconfig(x11) pkgconfig(xext)'],
     'gxde-ocr': ['boost-devel eigen3-devel opencv-devel'],
-    'gxde-picker': ['pkgconfig(x11) pkgconfig(xext) pkgconfig(xtst)',
+    'gxde-picker': ['qt6-qtbase-private-devel',
+                    'pkgconfig(x11) pkgconfig(xext) pkgconfig(xtst)',
                     'pkgconfig(egl) pkgconfig(wayland-client) pkgconfig(xcb)',
                     'xcb-util-devel'],
-    'gxde-reader': ['libgxps-devel cairo-devel glib2-devel djvulibre-devel',
+    'gxde-reader': ['cups-devel libgxps-devel cairo-devel glib2-devel djvulibre-devel',
                     'libjpeg-turbo-devel lcms2-devel openjpeg2-devel',
                     'libchardet-devel libarchive-devel libtiff-devel',
                     'libpng-devel gtest-devel qt6-qtwebengine-devel',
@@ -57,16 +66,21 @@ EXTRA_BUILDREQS = {
     'gxde-roller': ['kf6-karchive-devel kf6-kcodecs-devel libarchive-devel',
                     'openssl-devel pkgconfig(zlib) libzip-devel minizip-devel',
                     'libsecret-devel poppler-cpp-devel gtest-devel'],
-    'gxde-screen-recorder': ['qt6-qtmultimedia-devel pkgconfig(gstreamer-app-1.0)',
+    'gxde-screen-recorder': ['qt6-qtmultimedia-devel qt6-qtbase-private-devel',
+                             'qt6-qtwayland-devel opencv-devel pkgconfig(gstreamer-app-1.0)',
                              'pkgconfig(libavformat) pkgconfig(libavcodec)',
-                             'pkgconfig(libavutil) pkgconfig(libdrm)',
+                             'pkgconfig(libavutil) pkgconfig(libswscale)',
+                             'pkgconfig(libswresample) pkgconfig(libdrm)',
+                             'ffmpegthumbnailer-devel libv4l-devel systemd-devel',
                              'portaudio-devel libusb1-devel libepoxy-devel',
                              'pkgconfig(x11) pkgconfig(xext) pkgconfig(xtst)',
+                             'pkgconfig(xinerama)',
                              'pkgconfig(xcursor) pkgconfig(xfixes) pkgconfig(xrandr)',
                              'xcb-util-devel'],
     'gxde-system-assistant': ['qt6-qtcharts-devel libqtxdg-devel procps-ng-devel'],
-    'gxde-system-monitor': ['polkit-qt6-1-devel icu-devel libcap-devel',
-                            'libpcap-devel libnl3-devel pkgconfig(xcb)',
+    'gxde-system-monitor': ['polkit-qt6-1-devel libicu-devel libcap-devel',
+                            'libpcap-devel libnl3-devel systemd-devel',
+                            'pkgconfig(xcb) pkgconfig(xext)',
                             'xcb-util-wm-devel'],
     'gxde-voice-recorder': ['qt6-qtmultimedia-devel pkgconfig(libavformat)',
                             'pkgconfig(libavcodec) pkgconfig(libavutil)',
@@ -162,7 +176,8 @@ def prepare_one(name, lock):
               '@BUILDREQS@': build_requires(name, meta),
               '@REQUIRES@': runtime_requires(name, meta),
               '@PROVIDES@': provides(name, meta),
-              '@DEBUG@': '%global debug_package %{nil}' if meta['build'] in ('copy', 'make') else '',
+              '@DEBUG@': '%global debug_package %{nil}' if meta['build'] in ('copy', 'make') or
+                         name == 'libimagevisualresult6' else '',
               '@ARCH@': 'BuildArch:      noarch' if meta['build'] in ('copy', 'make') else
                        'ExclusiveArch:  x86_64 aarch64'}
     for key, value in values.items():
@@ -174,7 +189,15 @@ def build_requires(name, meta):
     if meta['build'] == 'copy':
         return 'BuildRequires:  python3'
     if meta['build'] == 'make':
-        return 'BuildRequires:  make python3 qt6-qttools-devel qt6-linguist'
+        reqs = ['make python3 qt6-qttools-devel qt6-linguist']
+        if name == 'gxde-hardware-viewer':
+            reqs.append('python3-pyqt6-base')
+        return '\n'.join('BuildRequires:  ' + req for req in reqs)
+    if name == 'gio-qt6':
+        return ('BuildRequires:  gcc-c++ cmake ninja-build pkgconf-pkg-config\n'
+                'BuildRequires:  qt5-qtbase-devel qt6-qtbase-devel glibmm2.4-devel')
+    if name == 'libimagevisualresult6':
+        return 'BuildRequires:  gcc-c++ cmake ninja-build'
     reqs = ['gcc gcc-c++ make pkgconf-pkg-config python3 gettext',
             'qt6-qtbase-devel qt6-qttools-devel qt6-linguist',
             'qt6-qtsvg-devel qt6-qtdeclarative-devel qt6-qt5compat-devel',
@@ -207,7 +230,9 @@ def runtime_requires(name, meta):
     if name == 'gxde-downloader-neo':
         return 'Requires:       spark-webapp-runtime aria2 unzip python3 python3-requests bash'
     if name == 'gxde-hardware-viewer':
-        return 'Requires:       python3 python3-qt6 python3-psutil python3-dbus pciutils usbutils polkit bash'
+        return 'Requires:       python3 python3-pyqt6-base python3-psutil python3-dbus pciutils usbutils polkit bash'
+    if name in ('gio-qt6', 'libimagevisualresult6'):
+        return ''
     reqs = []
     if name == 'gxde-clone':
         reqs.extend(('gxde-dtk5', 'gxde-dtk2', 'partclone', 'ntfs-3g', 'xfsprogs'))
@@ -225,6 +250,10 @@ def runtime_requires(name, meta):
 
 
 def provides(name, meta):
+    if name == 'gio-qt6':
+        return 'Provides:       gio-qt6-devel = %{version}-%{release}'
+    if name == 'libimagevisualresult6':
+        return 'Provides:       libimagevisualresult6-devel = %{version}-%{release}'
     aliases = {'dde-clipboard': 'deepin-clipboard', 'gxde-calculator': 'deepin-calculator',
                'gxde-calendar': 'dde-calendar', 'gxde-camera': 'deepin-camera',
                'gxde-clone': 'deepin-clone', 'gxde-font-manager': 'gxde-font-installer',

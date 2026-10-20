@@ -7,6 +7,22 @@
     "build": "cmake",
     "license": "GPL-3.0-or-later AND CC-BY-4.0 AND CC0-1.0"
   },
+  "gio-qt6": {
+    "repo": "linuxdeepin/gio-qt",
+    "upstream": "gio-qt",
+    "aur": null,
+    "summary": "Qt6 wrapper library for GIO",
+    "build": "cmake",
+    "license": "LGPL-3.0-or-later"
+  },
+  "libimagevisualresult6": {
+    "repo": "linuxdeepin/image-editor",
+    "upstream": "image-editor",
+    "aur": null,
+    "summary": "Qt6 image visual result library for GXDE camera",
+    "build": "cmake",
+    "license": "GPL-3.0-or-later"
+  },
   "gxde-boot-maker": {
     "repo": "GXDE-OS/gxde-boot-maker",
     "upstream": "gxde-boot-maker",

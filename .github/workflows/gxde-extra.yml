@@ -1,0 +1,193 @@
+name: GXDE extra Fedora
+on:
+  push:
+    paths: ['packages/gxde-extra/**', 'scripts/gxde-extra-sources.py',
+            'scripts/build-fedora-gxde-extra.sh', '.github/workflows/gxde-extra.yml']
+  pull_request:
+    paths: ['packages/gxde-extra/**', 'scripts/gxde-extra-sources.py',
+            'scripts/build-fedora-gxde-extra.sh', '.github/workflows/gxde-extra.yml']
+  schedule:
+    - cron: '51 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+concurrency:
+  group: gxde-extra-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  sources:
+    runs-on: ubuntu-latest
+    outputs:
+      packages: ${{ steps.resolve.outputs.packages }}
+      build: ${{ steps.resolve.outputs.build }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m unittest discover -s tests -p 'test_*.py'
+      - id: resolve
+        env:
+          EVENT: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          if [[ "$EVENT" == schedule || "$EVENT" == workflow_dispatch ]]; then
+            cp packages/gxde-extra/upstream-lock.json /tmp/gxde-extra-old-lock.json
+            python3 scripts/gxde-extra-sources.py update
+          fi
+          python3 - "$EVENT" <<'PY' >> "$GITHUB_OUTPUT"
+          import json, sys
+          from pathlib import Path
+          manifest = json.loads(Path('packages/gxde-extra/manifest.json').read_text())
+          new = json.loads(Path('packages/gxde-extra/upstream-lock.json').read_text())
+          old_path = Path('/tmp/gxde-extra-old-lock.json')
+          old = json.loads(old_path.read_text()) if old_path.exists() else {}
+          changed = sorted(n for n in manifest if sys.argv[1] != 'schedule' or old.get(n) != new.get(n))
+          print('packages=' + json.dumps(changed, separators=(',', ':')))
+          print('build=' + str(bool(changed)).lower())
+          PY
+          mapfile -t changed < <(python3 - "$EVENT" <<'PY'
+          import json, sys
+          from pathlib import Path
+          manifest = json.loads(Path('packages/gxde-extra/manifest.json').read_text())
+          new = json.loads(Path('packages/gxde-extra/upstream-lock.json').read_text())
+          old_path = Path('/tmp/gxde-extra-old-lock.json')
+          old = json.loads(old_path.read_text()) if old_path.exists() else {}
+          print('\n'.join(sorted(n for n in manifest if sys.argv[1] != 'schedule' or old.get(n) != new.get(n))))
+          PY
+          )
+          for name in "${changed[@]}"; do
+            python3 scripts/gxde-extra-sources.py prepare --package "$name"
+          done
+      - uses: actions/upload-artifact@v4
+        if: steps.resolve.outputs.build == 'true'
+        with:
+          name: gxde-extra-sources
+          path: |
+            build/*-rpmbuild/SOURCES
+            build/*-rpmbuild/SPECS
+            packages/gxde-extra/upstream-lock.json
+
+  build:
+    needs: sources
+    if: needs.sources.outputs.build == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJSON(needs.sources.outputs.packages) }}
+        fedora: [44, 45]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: gxde-extra-sources
+          path: .
+      - name: Build and install RPM
+        run: |
+          set -o pipefail
+          mkdir -p build
+          docker run --rm -v "$PWD:/work" -w /work fedora:${{ matrix.fedora }} \
+            bash scripts/build-fedora-gxde-extra.sh '${{ matrix.package }}' \
+            2>&1 | tee build/fedora-extra.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: extra-${{ matrix.package }}-${{ matrix.fedora }}
+          path: |
+            build/fedora-extra.log
+            build/${{ matrix.package }}-rpmbuild/RPMS
+            build/${{ matrix.package }}-rpmbuild/SRPMS
+
+  copr:
+    needs: [sources, build]
+    if: >-
+      github.event_name != 'pull_request' &&
+      github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: extra-*-44
+          path: result
+      - name: Submit successful packages to COPR
+        env:
+          COPR_CONFIG: ${{ secrets.COPR_CONFIG }}
+          COPR_GXDE_EXTRA_PROJECT: charofstring/gxde-extra
+          PACKAGES: ${{ needs.sources.outputs.packages }}
+        run: |
+          set -euo pipefail
+          test -n "$COPR_CONFIG"
+          python3 -m pip install --user copr-cli
+          umask 077
+          config=$(mktemp)
+          trap 'rm -f "$config"' EXIT
+          printf '%s\n' "$COPR_CONFIG" > "$config"
+          copr="$HOME/.local/bin/copr-cli --config $config"
+          mapfile -t names < <(python3 -c 'import json,os; print("\n".join(json.loads(os.environ["PACKAGES"])))')
+          # The helpers supply Clipboard, Log Viewer and Camera; Spark supplies Downloader.
+          deferred=()
+          ids=()
+          for name in "${names[@]}"; do
+            if [[ $name != gio-qt6 && $name != libimagevisualresult6 ]]; then continue; fi
+            mapfile -t srpms < <(find result -name "$name-*.src.rpm")
+            test "${#srpms[@]}" -eq 1
+            out=$($copr build --nowait --chroot fedora-44-x86_64 --chroot fedora-44-aarch64 \
+                --chroot fedora-45-x86_64 --chroot fedora-45-aarch64 \
+                "$COPR_GXDE_EXTRA_PROJECT" "${srpms[0]}")
+            echo "$out"
+            id=$(sed -nE 's/^Created builds: ([0-9]+).*$/\1/p' <<<"$out" | head -n1)
+            test -n "$id"
+            $copr watch-build "$id"
+          done
+          for name in "${names[@]}"; do
+            if [[ $name == gio-qt6 || $name == libimagevisualresult6 ]]; then continue; fi
+            if [[ $name == gxde-downloader-neo ]]; then
+              deferred+=("$name")
+              continue
+            fi
+            mapfile -t srpms < <(find result -name "$name-*.src.rpm")
+            test "${#srpms[@]}" -eq 1
+            out=$($copr build --nowait --chroot fedora-44-x86_64 --chroot fedora-44-aarch64 \
+                --chroot fedora-45-x86_64 --chroot fedora-45-aarch64 \
+                "$COPR_GXDE_EXTRA_PROJECT" "${srpms[0]}")
+            echo "$out"
+            id=$(sed -nE 's/^Created builds: ([0-9]+).*$/\1/p' <<<"$out" | head -n1)
+            test -n "$id"
+            ids+=("$id")
+          done
+          failed=0
+          for id in "${ids[@]}"; do $copr watch-build "$id" || failed=1; done
+          for name in "${deferred[@]}"; do
+            mapfile -t srpms < <(find result -name "$name-*.src.rpm")
+            test "${#srpms[@]}" -eq 1
+            $copr build --chroot fedora-44-x86_64 --chroot fedora-44-aarch64 \
+                --chroot fedora-45-x86_64 --chroot fedora-45-aarch64 \
+                "$COPR_GXDE_EXTRA_PROJECT" "${srpms[0]}" || failed=1
+          done
+          exit "$failed"
+
+  record:
+    needs: [sources, build, copr]
+    if: >-
+      always() && needs.build.result == 'success' &&
+      (needs.copr.result == 'success' || needs.copr.result == 'skipped') &&
+      (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') &&
+      github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: gxde-extra-sources
+          path: candidate
+      - run: |
+          cp candidate/packages/gxde-extra/upstream-lock.json packages/gxde-extra/upstream-lock.json
+          if ! git diff --quiet -- packages/gxde-extra/upstream-lock.json; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add packages/gxde-extra/upstream-lock.json
+            git commit -m 'Update GXDE extra application release tags after Fedora builds'
+            git push
+          fi
