@@ -30,6 +30,24 @@ class DTK6(unittest.TestCase):
             self.assertNotIn('Patch0:', spec)
             self.assertIn('Name:           gxde-dtk6', spec)
 
+    def test_dtk6gui_builds_with_treeland(self):
+        build = (sources.PACKAGE / 'build.sh').read_text()
+        self.assertNotIn('-DDTK_DISABLE_TREELAND=ON', build)
+        self.assertIn('export CMAKE_PREFIX_PATH="$stage/usr', build)
+        self.assertIn('DEEPIN_WAYLAND_TEST_COMPILE_RESULT:INTERNAL=TRUE', build)
+        self.assertEqual(sources.OWNERS, {'treeland-protocols': 'linuxdeepin'})
+        lock = json.loads((sources.PACKAGE / 'upstream-lock.json').read_text())
+        infra = json.loads((sources.ROOT / 'packages/gxde-infra/upstream-lock.json').read_text())
+        self.assertEqual(lock['components']['treeland-protocols'],
+                         infra['components']['treeland-protocols'])
+        with tempfile.TemporaryDirectory() as tmp, patch.object(sources, 'download'):
+            sources.prepare(lock, Path(tmp))
+            spec = (Path(tmp) / 'SPECS/gxde-dtk6.spec').read_text()
+        self.assertIn('linuxdeepin/treeland-protocols/tar.gz/', spec)
+        self.assertIn('mv treeland-protocols-%{commit7} treeland-protocols', spec)
+        self.assertIn('BuildRequires:  gxde-dtk5-devel >= 6.7.43-4', spec)
+        self.assertIn('Requires:       gxde-dtk5 >= 6.7.43-4', spec)
+
     def test_qml_plugin_stays_in_runtime(self):
         self.assertEqual(split.category('/usr/lib64/qt6/qml/org/deepin/dtk/libdtkdeclarativeplugin.so', '/usr/lib64'), 'runtime')
         self.assertEqual(split.category('/usr/lib64/qt6/plugins/platforms/libqdxcb.so', '/usr/lib64'), 'runtime')

@@ -1,6 +1,6 @@
 {
   "version": "6.0.48.gxde1",
-  "release": 2,
+  "release": 3,
   "components": {
     "dtk6log": {
       "tag": "0.0.6-1",
@@ -43,6 +43,12 @@
       "commit": "3160a37c8cdcc36c0081e16e9d90c7317b59a502",
       "url": "https://codeload.github.com/GXDE-OS/qt6integration/tar.gz/3160a37c8cdcc36c0081e16e9d90c7317b59a502",
       "sha256": "d55f00b28522ba6908848951377c071d98764b3dbd8b228a1082a8a1ab18b159"
+    },
+    "treeland-protocols": {
+      "tag": "0.7.0",
+      "commit": "49e985e0fb0b55fd2299349f08bac14c4e09f2b3",
+      "url": "https://codeload.github.com/linuxdeepin/treeland-protocols/tar.gz/49e985e0fb0b55fd2299349f08bac14c4e09f2b3",
+      "sha256": "79fad4e6243b03ecac486ff2eaf2970f7e88523b38e8d1a26faf0c8b6bb2fff6"
     }
   }
 }

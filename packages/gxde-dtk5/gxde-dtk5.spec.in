@@ -4,7 +4,7 @@ Name:           gxde-dtk5
 Version:        @VERSION@
 Release:        @RELEASE@%{?dist}
 Summary:        GXDE Qt 5 toolkit and desktop integration
-License:        LGPL-3.0-or-later AND LGPL-2.1-or-later AND BSD-3-Clause AND GPL-3.0-or-later
+License:        LGPL-3.0-or-later AND LGPL-2.1-or-later AND BSD-3-Clause AND GPL-3.0-or-later AND MIT
 URL:            https://github.com/GXDE-OS
 @SOURCES@
 Source10:       build.sh
@@ -63,7 +63,7 @@ gxde-dtk5widget-dev-git package.
 %prep
 # Verify all archives before extracting them. No network access during rpmbuild.
 (cd %{_sourcedir} && sha256sum -c %{SOURCE12})
-%setup -q -c -T -a 0 -a 1 -a 2 -a 3 -a 4 -a 5 -a 6
+%setup -q -c -T -a 0 -a 1 -a 2 -a 3 -a 4 -a 5 -a 6 -a 7
 mv dtk5common-%{commit0} dtk5common
 mv dtklog-%{commit1} dtklog
 mv dtk5core-%{commit2} dtk5core
@@ -71,12 +71,14 @@ mv dtk5gui-%{commit3} dtk5gui
 mv dtk5widget-%{commit4} dtk5widget
 mv dde-qt5platform-plugins-%{commit5} dde-qt5platform-plugins
 mv dde-qt5integration-%{commit6} dde-qt5integration
+mv treeland-protocols-%{commit7} treeland-protocols
 cp %{SOURCE13} upstream-lock.json
 mkdir licenses
 for module in dtk5common dtk5core dtk5gui dtk5widget dde-qt5platform-plugins dde-qt5integration; do
     cp "$module/LICENSE" "licenses/$module.LICENSE"
 done
 cp dtklog/LICENSE.LGPL licenses/dtklog.LICENSE.LGPL
+cp treeland-protocols/LICENSES/MIT.txt licenses/treeland-protocols.MIT.txt
 
 %build
 %set_build_flags

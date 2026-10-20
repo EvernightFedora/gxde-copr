@@ -4,7 +4,7 @@ Name:           gxde-dtk6
 Version:        @VERSION@
 Release:        @RELEASE@%{?dist}
 Summary:        GXDE Qt 6 toolkit and desktop integration
-License:        LGPL-3.0-or-later AND LGPL-2.1-or-later
+License:        LGPL-3.0-or-later AND LGPL-2.1-or-later AND MIT
 URL:            https://github.com/GXDE-OS
 @SOURCES@
 Source10:       build.sh
@@ -13,7 +13,7 @@ Source12:       sources.sha256
 Source13:       upstream-lock.json
 ExclusiveArch:  x86_64 aarch64
 BuildRequires:  gcc-c++ cmake ninja-build make python3
-BuildRequires:  gxde-dtk5-devel >= 6.7.43
+BuildRequires:  gxde-dtk5-devel >= 6.7.43-4
 BuildRequires:  qt6-rpm-macros qt6-qtbase-devel qt6-qtbase-private-devel
 BuildRequires:  qt6-qtdeclarative-devel qt6-qtdeclarative-private-devel
 BuildRequires:  qt6-qttools-devel qt6-qtshadertools-devel qt6-qt5compat-devel
@@ -31,7 +31,7 @@ BuildRequires:  pkgconfig(xcb-keysyms) pkgconfig(xcb-xkb) pkgconfig(xcb-composit
 BuildRequires:  pkgconfig(xcb-damage) pkgconfig(xcb-xinerama) pkgconfig(xkbcommon-x11)
 BuildRequires:  pkgconfig(mtdev) pkgconfig(egl) pkgconfig(cairo)
 BuildRequires:  pkgconfig(wayland-client) pkgconfig(wayland-cursor) pkgconfig(xkbcommon)
-Requires:       gxde-dtk5 >= 6.7.43
+Requires:       gxde-dtk5 >= 6.7.43-4
 Requires:       qt6-filesystem
 Recommends:     lshw
 Conflicts:      dtk6log dtk6core dtk6gui dtk6widget dtk6declarative
@@ -44,7 +44,7 @@ Shared DTK configuration is supplied by gxde-dtk5.
 %package devel
 Summary:        Development files for GXDE DTK6
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       gxde-dtk5-devel >= 6.7.43
+Requires:       gxde-dtk5-devel >= 6.7.43-4
 Requires:       qt6-qtbase-devel%{?_isa} qt6-qtdeclarative-devel%{?_isa}
 Conflicts:      dtk6log-devel dtk6core-devel dtk6gui-devel dtk6widget-devel dtk6declarative-devel
 
@@ -53,7 +53,7 @@ Headers, linker symlinks and CMake, qmake and pkg-config metadata for DTK6.
 
 %prep
 (cd %{_sourcedir} && sha256sum -c %{SOURCE12})
-%setup -q -c -T -a 0 -a 1 -a 2 -a 3 -a 4 -a 5 -a 6
+%setup -q -c -T -a 0 -a 1 -a 2 -a 3 -a 4 -a 5 -a 6 -a 7
 mv dtk6log-%{commit0} dtk6log
 mv dtk6core-%{commit1} dtk6core
 mv dtk6gui-%{commit2} dtk6gui
@@ -61,12 +61,14 @@ mv dtk6widget-%{commit3} dtk6widget
 mv dtk6declarative-%{commit4} dtk6declarative
 mv dde-qt6platform-plugins-%{commit5} dde-qt6platform-plugins
 mv qt6integration-%{commit6} qt6integration
+mv treeland-protocols-%{commit7} treeland-protocols
 cp %{SOURCE13} upstream-lock.json
 mkdir licenses
 for module in dtk6core dtk6gui dtk6widget dtk6declarative dde-qt6platform-plugins qt6integration; do
     cp "$module/LICENSE" "licenses/$module.LICENSE"
 done
 cp dtk6log/LICENSE.LGPL licenses/dtk6log.LICENSE.LGPL
+cp treeland-protocols/LICENSES/MIT.txt licenses/treeland-protocols.MIT.txt
 
 %build
 %set_build_flags

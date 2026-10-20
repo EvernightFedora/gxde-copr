@@ -15,7 +15,9 @@ CORE_MODULE = "dtk5core"
 SPEC_NAME = "gxde-dtk5"
 DEFAULT_OUTPUT = ROOT / "build/rpmbuild"
 MODULES = ("dtk5common", "dtklog", "dtk5core", "dtk5gui", "dtk5widget",
-           "dde-qt5platform-plugins", "dde-qt5integration")
+           "dde-qt5platform-plugins", "dde-qt5integration", "treeland-protocols")
+OWNERS = {"treeland-protocols": "linuxdeepin"}
+SHARED_COMPONENTS = {"treeland-protocols": ROOT / "packages/gxde-infra/upstream-lock.json"}
 TAG = re.compile(r"v?(\d+(?:\.\d+)*)(?:-?gxde(\d+)|-(\d+))?$")
 
 
@@ -70,19 +72,30 @@ def download(url, path, expected=None):
 def resolve(old, cache):
     components = {}
     for name in MODULES:
-        refs = subprocess.check_output(
-            ["git", "ls-remote", "--tags", f"https://github.com/GXDE-OS/{name}.git"],
-            text=True, timeout=120)
-        tag, commit = latest_tag(refs)
+        shared = None
+        if name in SHARED_COMPONENTS:
+            shared = json.loads(SHARED_COMPONENTS[name].read_text())["components"][name]
+            tag, commit = shared["tag"], shared["commit"]
+            url = shared["url"]
+            expected = shared["sha256"]
+            owner = OWNERS[name]
+            if not url.startswith(f"https://codeload.github.com/{owner}/{name}/tar.gz/") or not url.endswith(commit):
+                raise ValueError(f"{name}: invalid shared source URL")
+        else:
+            owner = OWNERS.get(name, "GXDE-OS")
+            refs = subprocess.check_output(
+                ["git", "ls-remote", "--tags", f"https://github.com/{owner}/{name}.git"],
+                text=True, timeout=120)
+            tag, commit = latest_tag(refs)
+            url = f"https://codeload.github.com/{owner}/{name}/tar.gz/{commit}"
         previous = old.get("components", {}).get(name)
         if previous and tag_key(tag) < tag_key(previous["tag"]):
             raise ValueError(f"{name}: upstream tag rollback requires manual review")
         if previous and previous["tag"] == tag and previous["commit"] != commit:
             raise ValueError(f"{name}: released tag moved; refusing automatic update")
-        url = f"https://codeload.github.com/GXDE-OS/{name}/tar.gz/{commit}"
         component = {"tag": tag, "commit": commit, "url": url}
         component["sha256"] = download(url, cache / f"{name}-{commit}.tar.gz",
-                                       previous["sha256"] if previous and previous["commit"] == commit else None)
+                                       expected if shared else previous["sha256"] if previous and previous["commit"] == commit else None)
         components[name] = component
         print(f"{name}: {tag} ({commit[:12]})")
     version = rpm_version(components[CORE_MODULE]["tag"])
@@ -92,6 +105,9 @@ def resolve(old, cache):
 
 
 def prepare(lock, destination):
+    for name, path in SHARED_COMPONENTS.items():
+        if name in MODULES and lock["components"].get(name) != json.loads(path.read_text())["components"][name]:
+            raise ValueError(f"{name}: release lock differs from gxde-infra; run update first")
     for directory in ("SOURCES", "SPECS", "BUILD", "BUILDROOT", "RPMS", "SRPMS"):
         (destination / directory).mkdir(parents=True, exist_ok=True)
     definitions, sources, checks = [], [], []

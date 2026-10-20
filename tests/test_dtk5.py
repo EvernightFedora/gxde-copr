@@ -64,17 +64,28 @@ class Tags(unittest.TestCase):
 
     def test_non_core_update_increments_release(self):
         components = {name: {"tag": "6.7.43", "commit": "a", "url": f"https://codeload.github.com/GXDE-OS/{name}/tar.gz/a", "sha256": "digest"} for name in sources.MODULES}
+        infra = json.loads((ROOT / "packages/gxde-infra/upstream-lock.json").read_text())
+        components["treeland-protocols"] = infra["components"]["treeland-protocols"]
         old = {"version": "6.7.43", "release": 3, "components": components}
-        refs = ["b refs/tags/6.7.44"] + ["a refs/tags/6.7.43"] * 6
+        refs = ["b refs/tags/6.7.44"] + ["a refs/tags/6.7.43"] * (len(sources.MODULES) - 2)
         with patch.object(sources.subprocess, "check_output", side_effect=refs), patch.object(sources, "download", return_value="digest"):
             self.assertEqual(sources.resolve(old, Path("unused"))["release"], 4)
 
     def test_unchanged_release_is_stable(self):
         old = json.loads((sources.PACKAGE / "upstream-lock.json").read_text())
-        refs = [f'{old["components"][name]["commit"]} refs/tags/{old["components"][name]["tag"]}' for name in sources.MODULES]
+        refs = [f'{old["components"][name]["commit"]} refs/tags/{old["components"][name]["tag"]}'
+                for name in sources.MODULES if name != "treeland-protocols"]
         digests = [old["components"][name]["sha256"] for name in sources.MODULES]
-        with patch.object(sources.subprocess, "check_output", side_effect=refs), patch.object(sources, "download", side_effect=digests):
+        with patch.object(sources.subprocess, "check_output", side_effect=refs) as git_refs, patch.object(sources, "download", side_effect=digests):
             self.assertEqual(sources.resolve(old, Path("unused")), old)
+        self.assertEqual(git_refs.call_count, len(sources.MODULES) - 1)
+
+    def test_prepare_rejects_treeland_drift_from_infra(self):
+        lock = json.loads((sources.PACKAGE / "upstream-lock.json").read_text())
+        lock["components"]["treeland-protocols"]["tag"] = "0.5.9"
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaisesRegex(ValueError, "differs from gxde-infra"):
+                sources.prepare(lock, Path(tmp))
 
 
 class Checksums(unittest.TestCase):
@@ -99,6 +110,20 @@ class Checksums(unittest.TestCase):
 
 
 class Packages(unittest.TestCase):
+    def test_treeland_release_matches_infra_and_is_build_only(self):
+        lock = json.loads((sources.PACKAGE / "upstream-lock.json").read_text())
+        infra = json.loads((ROOT / "packages/gxde-infra/upstream-lock.json").read_text())
+        self.assertEqual(lock["components"]["treeland-protocols"],
+                         infra["components"]["treeland-protocols"])
+        self.assertEqual(sources.OWNERS["treeland-protocols"], "linuxdeepin")
+        build = (sources.PACKAGE / "build.sh").read_text()
+        spec = (sources.PACKAGE / "gxde-dtk5.spec.in").read_text()
+        self.assertIn('export CMAKE_PREFIX_PATH="$stage/usr', build)
+        self.assertIn("DEEPIN_WAYLAND_TEST_COMPILE_RESULT:INTERNAL=TRUE", build)
+        self.assertNotIn("-DDTK_DISABLE_TREELAND=ON", build)
+        self.assertIn("mv treeland-protocols-%{commit7} treeland-protocols", spec)
+        self.assertNotIn("for module in treeland-protocols", spec)
+
     def test_widget_devel_is_separate_from_runtime(self):
         for path in ("/usr/include/dtk5/DWidget/DApplication", "/usr/lib64/libdtkwidget.so",
                      "/usr/lib64/cmake/DtkWidget/DtkWidgetConfig.cmake"):

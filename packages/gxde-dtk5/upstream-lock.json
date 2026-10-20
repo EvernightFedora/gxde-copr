@@ -1,6 +1,6 @@
 {
   "version": "6.7.43",
-  "release": 3,
+  "release": 4,
   "components": {
     "dtk5common": {
       "tag": "6.7.43",
@@ -43,6 +43,12 @@
       "commit": "bd7fe0a7fe7d27feb240d711dfafa97f3eb40c4c",
       "url": "https://codeload.github.com/GXDE-OS/dde-qt5integration/tar.gz/bd7fe0a7fe7d27feb240d711dfafa97f3eb40c4c",
       "sha256": "c08b5099429b709ad87ad74a2fe453cc8f20ca8fc95eb720bb673aaad9b1b829"
+    },
+    "treeland-protocols": {
+      "tag": "0.7.0",
+      "commit": "49e985e0fb0b55fd2299349f08bac14c4e09f2b3",
+      "url": "https://codeload.github.com/linuxdeepin/treeland-protocols/tar.gz/49e985e0fb0b55fd2299349f08bac14c4e09f2b3",
+      "sha256": "79fad4e6243b03ecac486ff2eaf2970f7e88523b38e8d1a26faf0c8b6bb2fff6"
     }
   }
 }

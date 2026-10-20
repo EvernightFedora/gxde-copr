@@ -7,7 +7,9 @@ spec = importlib.util.spec_from_file_location("dtk_sources", Path(__file__).with
 sources = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(sources)
 sources.MODULES = ("dtk6log", "dtk6core", "dtk6gui", "dtk6widget",
-                   "dtk6declarative", "dde-qt6platform-plugins", "qt6integration")
+                   "dtk6declarative", "dde-qt6platform-plugins", "qt6integration",
+                   "treeland-protocols")
+sources.OWNERS = {"treeland-protocols": "linuxdeepin"}
 sources.CORE_MODULE = "dtk6core"
 sources.SPEC_NAME = "gxde-dtk6"
 sources.PACKAGE = sources.ROOT / "packages/gxde-dtk6"

@@ -2,6 +2,12 @@
 
 当前补丁：**无**。不使用 sed 或其他隐式源码修改。
 
+## Treeland 0.7.0 构建期依赖
+
+- `linuxdeepin/treeland-protocols` 正式 tag `0.7.0`，与 `gxde-infra` 使用相同 commit 和 SHA256。
+- **无源码 patch**。协议仅暂存供 `dtk6gui` 编译，不随 DTK6 RPM 安装。移除 `DTK_DISABLE_TREELAND=ON`，并检查 Treeland 子构建成功且使用暂存的协议。
+- 移除条件：Fedora 提供兼容的协议包，且可直接作为 DTK6 构建依赖。
+
 ## 已移除：0001-dtk6core-qt611-entrylist.patch
 
 - 组件/tag：`dtk6core 6.0.48`。
