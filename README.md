@@ -4,6 +4,7 @@
 Welcome. This repository stores GXDE Fedora packaging.
 
 GXDE on COPR is maintained by [@CharOfString](https://github.com/CharOfString).
+
 Evernight Vista is maintained by [@EvernightFedora](https://github.com/EvernightFedora) [@evernightvista](https://github.com/evernightvista)
 
 ## Updating COPR Packages
