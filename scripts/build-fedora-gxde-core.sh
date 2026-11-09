@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
-# Run inside a disposable Fedora 44/45 container with the repository at /work.
+# Run inside a disposable Fedora 45 container with the repository at /work.
 # Builds the split gxde-core packages in dependency-wave order; each wave's
 # RPMs are installed before the next so intra-project BuildRequires
 # (gxde-libs-devel, gxde-dock-devel, gxde-app-management-devel) resolve.
 set -euo pipefail
 source /etc/os-release
-if [[ "$ID" != fedora || ! "$VERSION_ID" =~ ^(44|45)$ ]]; then
-    echo 'This script requires a Fedora 44 or 45 container.' >&2
+if [[ "$ID" != fedora || "$VERSION_ID" != 45 ]]; then
+    echo 'This script requires a Fedora 45 container.' >&2
     exit 1
 fi
 cd /work
 dnf -y install rpm-build redhat-rpm-config dnf5-plugins python3 shadow-utils
-for project in gxde-dtk5 gxde-dtk2 gxde-dtk6 gxde-dtk2-qt6 gxde-infra; do
+for project in gxde-dtk5 gxde-dtk2 gxde-dtk6 gxde-dtk2-qt6 gxde-infra gxde-gxtk7; do
     dnf -y copr enable "charofstring/$project"
 done
 python3 scripts/gxde-core-sources.py prepare --group all
@@ -23,7 +23,7 @@ WAVES=(
      gxde-session-ui gxde-app-management'
     'gxde-dock gxde-control-center'
     'gxde-top-panel gxde-file-manager'
-    'gxde-search'
+    'gxde-search gxde-wallpaper-chooser'
     'gxde-core'
 )
 for wave in "${WAVES[@]}"; do

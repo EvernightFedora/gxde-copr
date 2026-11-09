@@ -2,6 +2,30 @@
 
 当前新增源码补丁：**1 项**。
 
+## Deepin Qt 平台主题限定到 GXDE 会话（Release 3）
+
+- 上游 `/etc/profile.d/gxde.sh` 无条件导出 `QT_QPA_PLATFORMTHEME=deepin`，导致只要
+  安装了 `gxde-infra`，Plasma/KDE 会话中的所有 Qt 程序也会加载 Deepin 平台主题，
+  覆盖 Plasma 自己的配色、控件和图标设置。
+- RPM 安装阶段将该导出改为按会话判断：仅 `XDG_CURRENT_DESKTOP`、
+  `XDG_SESSION_DESKTOP` 或 `DESKTOP_SESSION` 表明 GXDE/Deepin 时启用。GXDM 会在
+  打开 PAM 会话前设置这些变量，因此 GXDE 与 FlakeWM 仍使用 Deepin 主题，KDE
+  和其他桌面不会被影响。
+- 这是安装配置适配，**没有新增上游源码 patch**。
+
+## Fedora 全局 Qt 平台变量修正（Release 2）
+
+- `gxde-desktop-base 2026.11.03` 安装的 `/etc/profile.d/gxde.sh` 全局设置
+  `QT_QPA_PLATFORM=dxcb;xcb;dwayland;wayland`。Display Manager 的 Wayland greeter
+  同样会读取该文件，Qt 因而在 `WAYLAND_DISPLAY` 已有、`DISPLAY` 尚未设置时优先加载
+  XCB；Plasma Login Manager 的 greeter/wallpaper 随即在 `libQt6XcbQpa` 中段错误，
+  GXDM 也无法稳定显示 greeter。
+- RPM 在 `%install` 的 buildroot 中删除这一项，让 Qt 根据会话自动选择平台；
+  `DTK2_XWAYLAND` 等其他 GXDE 设置不变。`QT_QPA_PLATFORMTHEME` 后续在 Release 3
+  改为仅 GXDE 会话启用。
+- 这是安装配置适配，**没有新增上游源码 patch**。已在 Fedora 45 测试机分别验证
+  Plasma Login Manager 和 `GXDM + FlakeWM + gxdm-greeter-neo` 正常运行。
+
 ## xdg-desktop-portal-gxde 1.2.5 手动更新
 
 - 从正式标签 `1.2.4` 更新到 `1.2.5`（提交 `c16a49325a5a`）；录屏 PipeWire 缓冲区标志修复已由上游提交 `58d31d2` 提供。
@@ -10,9 +34,9 @@
 ## 0001-network-utils-lrelease-path.patch
 
 - 组件/tag：`gxde-network-utils-qt6 6.0.1-arch1`，提交 `2d3ecd17b03e`。
-- 原因：上游 `translate_generation.sh` 将 Qt6 `lrelease` 固定为 `/usr/lib/qt6/bin/lrelease`；Fedora 44/45 的 `qt6-linguist` 提供 `/usr/bin/lrelease-qt6`，导致 COPR 11170578 的翻译生成失败。
+- 原因：上游 `translate_generation.sh` 将 Qt6 `lrelease` 固定为 `/usr/lib/qt6/bin/lrelease`；Fedora 45 的 `qt6-linguist` 提供 `/usr/bin/lrelease-qt6`，导致 COPR 11170578 的翻译生成失败。
 - 修改：优先通过 `PATH` 查找 `lrelease-qt6`，其次查找 `lrelease`，缺失时明确报错。保留翻译生成，不触及 C++ 源码。
-- 移除条件：GXDE 正式标签的脚本不再使用固定路径，且在 Fedora 44/45 完成构建验证。
+- 移除条件：GXDE 正式标签的脚本不再使用固定路径，且在 Fedora 45 完成构建验证。
 
 已在此轮对用户报告。
 

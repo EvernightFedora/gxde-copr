@@ -53,7 +53,7 @@ class Prepare(unittest.TestCase):
     def test_lock_has_three_components(self):
         lock = json.loads((gxdm.sources.PACKAGE / 'upstream-lock.json').read_text())
         self.assertEqual(len(lock['components']), 3)
-        self.assertEqual(lock['components']['gxde-display-manager']['tag'], '1.3.2-gxde2')
+        self.assertEqual(lock['components']['gxde-display-manager']['tag'], '1.3.6-gxde6')
         self.assertEqual(lock['components']['gxdm-emergency-mode']['tag'], '1.0.0-gxde2')
         self.assertEqual(lock['components']['MavenPro-OFL']['commit'],
                          '1c21ee500b7b87a4871696519fc84107a1a001df')
@@ -96,6 +96,17 @@ class Prepare(unittest.TestCase):
             for pam in ('gxdm.pam', 'gxdm-autologin.pam',
                         'gxdm-greeter.pam', 'gxdm-rescue.pam'):
                 self.assertIn(pam, spec, f'{pam} missing from spec')
+            self.assertIn('Source14:       gxdm.te', spec)
+            self.assertIn('Source15:       gxdm.fc', spec)
+            self.assertIn('Patch0:         0001-systemd-conflict-with-kmscon-vt.patch', spec)
+            self.assertIn('%patch -P 0 -p1', spec)
+            self.assertIn('%package selinux', spec)
+            self.assertIn('%selinux_modules_install', spec)
+            self.assertIn('%selinux_modules_install -s %{selinuxtype} %{_datadir}', spec)
+            self.assertTrue((Path(tmp) / 'SOURCES/gxdm.te').exists())
+            self.assertTrue((Path(tmp) / 'SOURCES/gxdm.fc').exists())
+            self.assertTrue((Path(tmp) / 'SOURCES/0001-systemd-conflict-with-kmscon-vt.patch').exists())
+            self.assertIn('kmsconvt@tty1.service', spec)
             # PAM install disabled in cmake (build.sh, not spec).
             build_sh = (gxdm.sources.PACKAGE / 'build.sh').read_text()
             self.assertIn('INSTALL_PAM_CONFIGURATION=OFF', build_sh)
